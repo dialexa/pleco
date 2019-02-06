@@ -1,1 +1,1 @@
-# Knex GraphQL Filter
+# QueryBuilder GraphQL Filter
