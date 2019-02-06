@@ -1,0 +1,31 @@
+{
+  "name": "knex-graphql-filter",
+  "version": "0.1.0",
+  "description": "A library for filtering resources in GraphQL using knex",
+  "main": "dist/index.js",
+  "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
+  "license": "MIT",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "tslint -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/graphql": "^14.0.5",
+    "@types/joi": "^14.3.1",
+    "@types/knex": "^0.14.14",
+    "tsconfig-paths": "^3.8.0",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.3.1"
+  },
+  "dependencies": {
+    "graphql": "^14.1.1",
+    "joi": "^14.3.1",
+    "knex": "^0.14.6"
+  }
+}
