@@ -1,0 +1,20 @@
+language: node_js
+dist: trusty
+sudo: required
+
+cache: yarn
+
+node_js:
+  - "10"
+  - "8"
+
+before_script:
+  - psql -c 'create database querybuilder_graphql_filter_test;' -U postgres
+
+after_success:
+  - yarn coverage
+
+services:
+  - postgresql
+addons:
+  postgresql: '9.6'
