@@ -21,7 +21,11 @@ export {
 } from './joi';
 
 export {
-  formFilterQuery,
-  formPageLimitOffsetQuery,
+  getFilterQuery,
+  getPageLimitOffsetQuery,
   getSortQuery,
 } from './functions';
+
+export {
+  IQueryBuilder,
+} from './querybuilder';

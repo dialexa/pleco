@@ -20,11 +20,8 @@
  *    the filter library.
  */
 
-import Knex from 'knex';
-
 import {
   IQueryBuilder,
-  KnexQB,
 } from 'src/querybuilder';
 import {
   IFilter,
@@ -35,48 +32,28 @@ import {
   SortDirection,
 } from 'src/types';
 
-/*
-Example Filter for user:
-{
-  AND: [{
-    numberOfHouses: { gt: 0 }
-  }, {
-    OR: [{
-      firstName: { AND: [{ contains: 'rand' }, { ne: 'Brand' }] }
-    }, {
-      lastName: { eq: 'Kuo' }
-    }]
-  }]
+interface IGetFilterQueryArgs<Q> {
+  filter: IFilter;
+  subqueries: Record<string, IQueryBuilder<Q>>;
 }
 
-SQL for example:
-select * from users
-where
-  id in (select id from numberOfHousesSubquery where value > 0) and
-  (id in (select id from usersFirstNameSubQuery where lower(value) like '%rand%' and value != 'Brand') or
-   id in (select id from usersLastNameSubQuery where value = 'Kuo'))
- */
-
-/*
- * TODO: analyze whether or not is is quicker to use CTEs and analyze the filter ahead of time or continue
- * to use subqueries
- */
+interface IGetSortQueryArgs<Q> {
+  sort: SortDirection;
+  subqueries: Record<string, IQueryBuilder<Q>>;
+}
 
 /**
- * Handles filters
+ * Handles filtering
  *
- * @param knex the instance of Knex to use for raw queries
+ * @param args the object containing the filter and the subqueries for those filters
  * @param qb the query builder to build off of
- * @param filter the filter object
- * @param subqueries the map of subqueries for handling filter fields
  */
-export const formFilterQuery = (
-  knex: Knex,
-  qb: Knex.QueryBuilder,
-  filter: IFilter,
-  subqueries: Record<string, Knex.QueryBuilder>,
-): Knex.QueryBuilder => {
+export const getFilterQuery = <Q>(
+  args: IGetFilterQueryArgs<Q>,
+  qb: IQueryBuilder<Q>,
+): IQueryBuilder<Q> => {
   const query = qb.clone();
+  const { filter, subqueries } = args;
   if (!filter) return query;
 
   const operator = Object.keys(filter)[0];
@@ -85,7 +62,7 @@ export const formFilterQuery = (
   if (operator === 'AND') {
     ((filter as IFilterAND).AND).map(f => {
       query.where(builder => {
-        builder = formFilterQuery(knex, builder, f, subqueries);
+        return getFilterQuery({ filter: f, subqueries }, builder);
       });
     });
 
@@ -93,7 +70,7 @@ export const formFilterQuery = (
   } else if (operator === 'OR') {
     ((filter as IFilterOR).OR).map(f => {
       query.orWhere(builder => {
-        builder = formFilterQuery(knex, builder, f, subqueries);
+        return getFilterQuery({ filter: f, subqueries }, builder);
       });
     });
 
@@ -130,18 +107,19 @@ export const formFilterQuery = (
       else query.where('value', '!=', parameter);
       break;
     case 'contains':
-      query.where(knex.raw('lower(value) like ?', `%${parameter.toLowerCase()}%`));
+      query.whereRaw('lower(value) like ?', [`%${parameter.toLowerCase()}%`]);
       break;
     default: // Referencing a field
       if (!subqueries[operator]) throw new Error(`Error forming filter query: missing subquery for ${operator}`);
 
       // Get the subquery
       const subquery = subqueries[operator].clone();
+      const whereInQuery = query.getNewInstance();
       query.whereIn('id',
-        knex.select('resource_id')
+        whereInQuery.select('resource_id')
         .from(subquery.as(`subquery_${operator}__${generateRandomNumber()}`)) // to avoid clashing subquery names
         .where(builder => {
-          builder = formFilterQuery(knex, builder, filter[operator], subqueries);
+          return getFilterQuery({ filter: filter[operator], subqueries }, builder);
         })
       );
       break;
@@ -157,18 +135,15 @@ export const formFilterQuery = (
  * of the sorting subquery. The reason for this is because queries that select DISTINCT will not work by just
  * doing a join, without selecting the sort column as well.
  *
- * @param knex the instance of Knex
- * @param qb the query builder to wrap as a subquery
- * @param sort the sort object which specifies the field and direction
- * @param subqueries the map of subqueries for handling sort fields
+ * @param args the object containing the specified sort and the subqueries for the sort field
+ * @param qb the query builder to build off of
  */
-export const getSortQuery = (
-  knex: Knex,
-  qb: Knex.QueryBuilder,
-  sort: Record<string, SortDirection>,
-  subqueries: Record<string, Knex.QueryBuilder>,
-): Knex.QueryBuilder => {
+export const getSortQuery = <Q>(
+  args: IGetSortQueryArgs<Q>,
+  qb: IQueryBuilder<Q>,
+): IQueryBuilder<Q> => {
   const query = qb.clone();
+  const { sort, subqueries } = args;
   if (!sort) return query;
 
   const field = Object.keys(sort)[0];
@@ -179,7 +154,9 @@ export const getSortQuery = (
 
   if (!sortSubquery) throw new Error(`Error forming sort query: missing subquery for ${field}`);
 
-  return knex
+  const wrapperQuery = query.getNewInstance();
+
+  return wrapperQuery
     .select('subquery.*')
     .from(query.as('subquery'))
     .leftJoin(sortSubquery.as('subquery_sort'), 'subquery.id', 'subquery_sort.resource_id')
@@ -189,29 +166,19 @@ export const getSortQuery = (
 /**
  * Handles paginating based on limit and offset
  *
- * @param knex the instance of knex
- * @param qb the query to build off of
  * @param page the page options
+ * @param qb the query builder to build off of
  */
-export const formPageLimitOffsetQuery = <S>(
-  qb: S,
-  qbType: string,
-  page: ILimitOffsetPage
-): S => {
-  const query = getQueryBuilder(qb, qbType);
-  if (!page || !page.limit) return query.build();
+export const getPageLimitOffsetQuery = <Q>(
+  page: ILimitOffsetPage,
+  qb: IQueryBuilder<Q>,
+): IQueryBuilder<Q> => {
+  const query = qb.clone();
+  if (!page || !page.limit) return query;
 
   const options = { ...limitOffsetPageDefault, ...page };
 
-  query.limit(options.limit).offset(options.offset);
-
-  return query.build();
+  return query.limit(options.limit).offset(options.offset);
 };
 
-const getQueryBuilder = <S>(qb: S, type: string): IQueryBuilder<S> => {
-  switch (type) {
-    case 'knex': return new KnexQB(qb);
-    default: return null;
-  }
-};
 const generateRandomNumber = () => Math.floor(Math.random() * 1000);

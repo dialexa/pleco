@@ -1,12 +1,13 @@
-# Knex GraphQL Filter
+# DB GraphQL Filter
 
 ## Overview
-knex-graphql-filter provides 4 things to make filtering easier with a knex, GraphQL stack. The library
+db-graphql-filter provides 4 things to make filtering easier with GraphQL on the database layer. The library
 is inspired by MongoDB's filtering syntax.
 1. [GraphQL Types](#graphql-types)
 2. [Typescript Types](#typescript-types)
 3. [Joi Validation Schemas](#joi-validation-schemas)
 4. [Filtering, Sorting, Paginating Functions](#functions)
+5. [Extensions](#extensions)
 
 ## GraphQL Types
 All the GraphQL types can be found in `src/graphql/index.ts`. For each `GraphQLScalarType` (excluding `Boolean`),
@@ -29,7 +30,7 @@ abilities with `AND` and `OR`.
 | lte       |                 | ✔                   | ✔                | ✔                  |
 | contains  |                 | ✔                   |                  |                    |
 
-In addition to the 4 `FilterQuery_*` types, knex-graphql-filter also provides
+In addition to the 4 `FilterQuery_*` types, db-graphql-filter also provides
 - `SortDirection`: an enum of `ASC` and `DESC`
 - `LimitOffsetPage`: an input object with limit and offset
 - `graphQLFilterTypes` which is a string containing the definitions of all the types in SDL.
@@ -136,7 +137,7 @@ The typescript types can be found in `src/types/index.ts`. These act as a transl
 ### Usage
 If we wanted to translate the `VehicleFilterInput` GraphQL type to Typescript, this is what we would do:
 ```ts
-import { IFilterQuery } from 'knex-graphql-filter';
+import { IFilterQuery } from 'db-graphql-filter';
 
 export interface IVehicleFilterInput {
   AND: IVehicleFilterInput[];
@@ -154,18 +155,19 @@ export interface IVehicleFilterInput {
 
 ## Joi Validation Schemas
 The joi validation schemas can be found in `src/joi/index.ts`. These provide additional protection around what the user inputs.
+
+### Provided Exports
+`filterQuerySchema`: a function that returns the schema pertaining to the `IFilterQuery` typescript type or the `FilterQuery_*` type.
+
 The rules for filters are:
 - each filter query can contain nested AND or OR
 - the filter can only have what is provided in the GraphQL type according to the table in the [GraphQL section](#graphql-types)
 - each filter object can only have one key
 - the filter can be empty
 
-### Provided Exports
-`filterQuerySchema`: a function that returns the schema pertaining to the `IFilterQuery` typescript type or the `FilterQuery_*` type.
-
 #### Usage
 ```ts
-import { filterQuerySchema } from 'knex-graphql-filter';
+import { filterQuerySchema } from 'db-graphql-filter';
 
 const vehicleFilterSchemaKeys = {
   AND: Joi.array().items(Joi.lazy(() => vehicleFilterSchema)),
@@ -187,7 +189,7 @@ Validating against this schema will also automatically convert the input to uppe
 
 #### Usage
 ```ts
-import { sortDirectionSchema } from 'knex-graphql-filter';
+import { sortDirectionSchema } from 'db-graphql-filter';
 
 const vehicleSortSchemaKeys = {
   numberOfUsers: sortDirectionSchema,
@@ -202,19 +204,26 @@ const vehicleSortSchema = Joi.object().keys(vehicleSortSchemaKeys).oxor(Object.k
 ## Functions
 The functions that do all the heavy lifting are in `src/functions/index.ts`.
 
-### `formFilterQuery(knex: Knex, query: Knex.QueryBuilder, filter: IFilter, subqueries: Record<string, Knex.QueryBuilder>): Knex.QueryBuilder`
+### Prerequisites
+Before we dive into the functions that are provided, `db-graphql-filter` has some prerequisites
+that must be met for the functions to work. Because of the nature of supporting multiple query builders,
+extensions must be used to properly call the methods. To convert your query builder to the generic
+query builder that `db-graphql-filter` uses, refer to the extension library documentation.
+
+For more information about the generic query builder, refer to the [Extensions section](#extensions)
+
+Note that all of the examples in this README are using the `db-graphql-filter-knex` extension.
+
+### getFilterQuery
 This function forms the filter query. The arguments are
-- `knex`: the instance of Knex to use for raw queries
-- `query`: the query builder to add the `WHERE` clauses to
-- `filter`: the filter object (more info in usage)
-- `subqueries`: a dictionary of subquery name to knex queries
+- `args`: an object with
+  - `filter`: the filter object of the form we have been using so far
+  - `subqueries`: a record of subqueries that maps the filter i.e. numberOfUsers to a query
+- `query`: the query builder to build off of
 
 #### Subquery Guidelines
 1. It is recommended for the subquery result to have as many rows as rows in the base table.
-   This means defining defaults or setting some values as NULL. An example of this is calculating
-   survey mood for users. Not all users have surveys, but if they do not have any surveys, they
-   should still have what we consider to be "neutral" survey mood. When filtering by neutral survey
-   mood, if we do not include these NULL rows, then we will miss these users.
+   This means defining defaults or setting some values as NULL for some rows.
 2. All subqueries must return the following columns named exactly like this:
      - resource_id: the id of the resource being queried i.e. the id column.
      - value: the value that is being matched against the filter for the resource with the resource_id
@@ -226,7 +235,8 @@ This function forms the filter query. The arguments are
 
 #### Usage
 ```ts
-import { formFilterQuery } from 'knex-graphql-filter';
+import { getFilterQuery } from 'db-graphql-filter';
+import { KnexQB } from 'db-graphql-filter-knex';
 
 // See Recipes section to see how to automate these trivial subqueries
 const make = knex('vehicles').select('id as resource_id', 'make as value', 'make as sort');
@@ -241,12 +251,12 @@ const numberOfUsers = knex
 
 ... // Subqueries for the other filter fields
 
-const subqueries = {
+const subqueries = KnexQB.bulkCreateQueries(knex, {
   make,
   model,
   numberOfUsers,
   ...
-};
+});
 
 const filter = {
   AND: [
@@ -265,11 +275,11 @@ const filter = {
 };
 
 let query = knex('vehicles').where(builder => {
-  builder = formFilterQuery(knex, builder, filter, subqueries);
+  builder = getFilterQuery({ filter, subqueries }, new KnexQB({ query: builder }));
 });
 ```
 
-### `getSortQuery(knex: Knex, query: Knex.QueryBuilder, sort: Record<string, SortDirection>, subqueries: Record<string, Knex.QueryBuilder>): Knex.QueryBuilder`
+### getSortQuery`
 This function provides sorting functionality. It returns a Knex.QueryBuilder because the implementation
 wraps the existing query in another query. The reason for this is because we cannot sort by fields
 we are not selecting if we are using `DISTINCT`.
@@ -277,28 +287,44 @@ we are not selecting if we are using `DISTINCT`.
 #### Usage
 Continuing from the code snippet for the [filter function](#usage-2)
 ```ts
-import { getSortQuery } from 'knex-graphql-filter';
+import { KnexQB } from 'db-graphql-filter-knex';
+import { getSortQuery } from 'db-graphql-filter';
 
 const sort = { userSurveyRating: 'asc' };
 
-query = getSortQuery(knex, query, sort, subqueries);
+query = getSortQuery({ sort, subqueries }, new KnexQB({ query })).build();
 ```
 
-### `formPageLimitOffsetQuery(knex: Knex, query: Knex.QueryBuilder, page: ILimitOffsetPage): Knex.QueryBuilder`
+### getPageLimitOffsetQuery
 This function returns a query with `limit` and `offset`. Empty options can
 also be passed, so it is safe to call `formPageLimitOffsetQuery` even
 with bogus options.
 
 #### Usage
 ```ts
-import { formPageLimitOffsetQuery } from 'knex-graphql-filter';
+import { KnexQB } from 'db-graphql-filter-knex';
+import { getPageLimitOffsetQuery } from 'db-graphql-filter';
 
 let query = knex('vehicles');
 // Page 3 with page sizes as 25
 const page = { limit: 25, offset: 50 };
 
-query = formPageLimitOffsetQuery(knex, query, page);
+query = getPageLimitOffsetQuery(page, new KnexQB({ query })).build();
 ```
+
+## Extensions
+`db-graphql-filter` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
+interface that only requires a subset of a full query builder features. To support another query builder,
+all that is needed is to implement the features needed in the required query builder.
+
+Converting from the query builder you are using to an instance of an extension depends on the extension,
+but all extensions will convert back to your query builder by calling `.build()`.
+
+Current supported query builders:
+
+| library | db-graphql-filter extension |
+|---------|-----------------------------|
+| knex    | db-graphql-filter-knex      |
 
 ## Recipes
 ### Automating the Creation of Subqueries for Each Column
@@ -318,3 +344,4 @@ columnNames.forEach(column => {
 
 ## Known Limitations
 1. Cursor pagination is currently unsupported
+2. The id column must be named `id`
