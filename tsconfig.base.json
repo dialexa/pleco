@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es6", "esnext", "dom"],
+    "module": "commonjs",
+    "declaration": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "sourceMap": true
+  }
+}

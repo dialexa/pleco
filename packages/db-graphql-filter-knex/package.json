@@ -1,0 +1,51 @@
+{
+  "name": "db-graphql-filter-knex",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --color src/**/*.ts test/**/*.ts",
+    "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
+    "test:coverage": "nyc report --reporter=text-lcov | coveralls",
+    "precommit": "lint-staged"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+      ],
+      "require": [
+        "ts-node/register"
+      ],
+      "reporter": [
+        "text-summary",
+        "text",
+        "html"
+      ],
+      "sourceMap": true,
+      "instrument": true
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn lint --fix",
+      "git add"
+    ],
+    "test/**/*.ts": [
+      "yarn lint --config test/.eslintrc.json --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "knex": "^0.16.3"
+  },
+  "peerDependencies": {
+    "db-graphql-filter": "../db-graphql-filter"
+  }
+}

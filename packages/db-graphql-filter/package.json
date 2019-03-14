@@ -1,0 +1,50 @@
+{
+  "name": "db-graphql-filter",
+  "version": "0.1.0",
+  "description": "A library for filtering resources in GraphQL on the database layer",
+  "main": "dist/index.js",
+  "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
+  "license": "MIT",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+   ],
+   "scripts": {
+     "build": "tsc",
+     "lint": "eslint --color src/**/*.ts test/**/*.ts",
+     "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
+     "test:coverage": "nyc report --reporter=text-lcov | coveralls",
+     "precommit": "lint-staged"
+   },
+   "nyc": {
+     "include": [
+       "src/**/*.ts"
+      ],
+      "extension": [
+        ".ts"
+      ],
+      "require": [
+        "ts-node/register"
+      ],
+      "reporter": [
+        "text-summary",
+        "text",
+        "html"
+      ],
+      "sourceMap": true,
+      "instrument": true
+   },
+   "lint-staged": {
+     "src/**/*.ts": [
+       "yarn lint --fix",
+       "git add"
+     ],
+     "test/**/*.ts": [
+       "yarn lint --config test/.eslintrc.json --fix",
+       "git add"
+     ]
+   },
+   "dependencies": {
+     "graphql": "^14.1.1"
+   }
+}
