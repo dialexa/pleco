@@ -202,7 +202,8 @@ const vehicleSortSchema = Joi.object().keys(vehicleSortSchemaKeys).oxor(Object.k
 `limitOffsetPageSchema`: validates that an object containing optional `limit` and `offset` are non-negative integers
 
 ## Functions
-The functions that do all the heavy lifting are in `src/functions/index.ts`.
+The functions that do all the heavy lifting are in `src/functions/index.ts`. Refer to each querybuilder implementation's
+package to view the usage for each function.
 
 ### Prerequisites
 Before we dive into the functions that are provided, `db-graphql-filter` has some prerequisites
@@ -234,66 +235,13 @@ This function forms the filter query. The arguments are
    the filter library.
 
 #### Usage
-```ts
-import { getFilterQuery } from 'db-graphql-filter';
-import { KnexQB } from 'db-graphql-filter-knex';
+See db-graphql-filter-[querybuilder-name]
 
-// See Recipes section to see how to automate these trivial subqueries
-const make = knex('vehicles').select('id as resource_id', 'make as value', 'make as sort');
-const model = knex('vehicles').select('id as resource_id', 'model as value', 'model as sort');
-
-// Create our subqueries
-const numberOfUsers = knex
-  .select('vehicles.id as resource_id', 'count(*) as value', 'count(*) as sort')
-  .from('vehicles')
-  .leftJoin('vehicles_users', 'vehicles_users.vehicle_id', 'vehicles.id') // left join so we don't lose vehicles that don't have users
-  .groupBy('vehicles');
-
-... // Subqueries for the other filter fields
-
-const subqueries = KnexQB.bulkCreateQueries(knex, {
-  make,
-  model,
-  numberOfUsers,
-  ...
-});
-
-const filter = {
-  AND: [
-    AND: [
-      { make: { eq: "nissan" } },
-      { numberOfUsers: { AND: [{ gt: 1000 }, { lt: 1999 }] } },
-      {
-        OR: [
-          { highwayMPG: { gt: 30 } },
-          { cityMPG: { gte: 20 } }
-        ]
-      },
-      { userSurveyRating: { gte: 80.5 } }
-    ]
-  ]
-};
-
-let query = knex('vehicles').where(builder => {
-  builder = getFilterQuery({ filter, subqueries }, new KnexQB({ query: builder }));
-});
-```
-
-### getSortQuery`
-This function provides sorting functionality. It returns a Knex.QueryBuilder because the implementation
-wraps the existing query in another query. The reason for this is because we cannot sort by fields
-we are not selecting if we are using `DISTINCT`.
+### getSortQuery
+This function provides sorting functionality. Currently, sorting by, then by is not supported.
 
 #### Usage
-Continuing from the code snippet for the [filter function](#usage-2)
-```ts
-import { KnexQB } from 'db-graphql-filter-knex';
-import { getSortQuery } from 'db-graphql-filter';
-
-const sort = { userSurveyRating: 'asc' };
-
-query = getSortQuery({ sort, subqueries }, new KnexQB({ query })).build();
-```
+See db-graphql-filter-[querybuilder-name]
 
 ### getPageLimitOffsetQuery
 This function returns a query with `limit` and `offset`. Empty options can
@@ -301,16 +249,7 @@ also be passed, so it is safe to call `formPageLimitOffsetQuery` even
 with bogus options.
 
 #### Usage
-```ts
-import { KnexQB } from 'db-graphql-filter-knex';
-import { getPageLimitOffsetQuery } from 'db-graphql-filter';
-
-let query = knex('vehicles');
-// Page 3 with page sizes as 25
-const page = { limit: 25, offset: 50 };
-
-query = getPageLimitOffsetQuery(page, new KnexQB({ query })).build();
-```
+See db-graphql-filter-[querybuilder-name]
 
 ## Extensions
 `db-graphql-filter` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
@@ -328,7 +267,7 @@ Current supported query builders:
 
 ## Recipes
 ### Automating the Creation of Subqueries for Each Column
-It is tedious to have to make subqueries for each column manually. We have found use in the following for postgres:
+It is tedious to have to make subqueries for each column manually. We have found use in the following for postgres + knex:
 ```ts
 const columnNames = await knex('vehicles').columnInfo().then(Object.keys);
 
@@ -345,3 +284,4 @@ columnNames.forEach(column => {
 ## Known Limitations
 1. Cursor pagination is currently unsupported
 2. The id column must be named `id`
+3. Multiple sorts is not supported
