@@ -263,7 +263,7 @@ Current supported query builders:
 
 | library | db-graphql-filter extension |
 |---------|-----------------------------|
-| knex    | db-graphql-filter-knex      |
+| knex    | [db-graphql-filter-knex](https://github.com/dialexa/db-graphql-filter/tree/v1/packages/db-graphql-filter-knex)      |
 
 ## Recipes
 ### Automating the Creation of Subqueries for Each Column
