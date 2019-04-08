@@ -235,13 +235,13 @@ This function forms the filter query. The arguments are
    the filter library.
 
 #### Usage
-See db-graphql-filter-[querybuilder-name]
+See [db-graphql-filter-querybuilder-name](#extensions)
 
 ### getSortQuery
 This function provides sorting functionality. Currently, sorting by, then by is not supported.
 
 #### Usage
-See db-graphql-filter-[querybuilder-name]
+See [db-graphql-filter-querybuilder-name](#extensions)
 
 ### getPageLimitOffsetQuery
 This function returns a query with `limit` and `offset`. Empty options can
@@ -249,7 +249,7 @@ also be passed, so it is safe to call `formPageLimitOffsetQuery` even
 with bogus options.
 
 #### Usage
-See db-graphql-filter-[querybuilder-name]
+See [db-graphql-filter-querybuilder-name](#extensions)
 
 ## Extensions
 `db-graphql-filter` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
