@@ -1,4 +1,4 @@
-import { GraphQLFilterTypes, SortDirection } from 'src/types';
+import { GraphQLFilterTypes, SortDirection } from '../types';
 
 type QueryCallback<T> = (builder: IQueryBuilder<T>) => IQueryBuilder<T>;
 

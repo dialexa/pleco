@@ -22,7 +22,7 @@
 
 import {
   IQueryBuilder,
-} from 'src/querybuilder';
+} from '../querybuilder';
 import {
   IFilter,
   IFilterAND,
@@ -30,7 +30,7 @@ import {
   ILimitOffsetPage,
   limitOffsetPageDefault,
   SortDirection,
-} from 'src/types';
+} from '../types';
 
 interface IGetFilterQueryArgs<Q> {
   filter: IFilter;
