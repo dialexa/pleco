@@ -1721,8 +1721,7 @@ dateformat@^3.0.0:
 "db-graphql-filter-knex@file:packages/db-graphql-filter-knex":
   version "0.1.0"
   dependencies:
-    db-graphql-filter "file:../../Library/Caches/Yarn/v1/db-graphql-filter"
-    knex "^0.16.3"
+    knex "^0.16.0"
 
 "db-graphql-filter@file:packages/db-graphql-filter":
   version "0.1.0"
@@ -1997,10 +1996,6 @@ es6-promisify@^5.0.0:
 escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.4, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
-
-eslint-config-import@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-import/-/eslint-config-import-0.13.0.tgz#082f3055e7ff651010526d35ac9a28ace438a544"
 
 eslint-import-resolver-node@^0.3.2:
   version "0.3.2"
@@ -3321,9 +3316,10 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
 
-knex@^0.16.3:
+knex@^0.16.0:
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/knex/-/knex-0.16.3.tgz#ca9effd4973655f42b42132b9019b0bc6bd20644"
+  integrity sha512-jGTOBW8b7exaBPfCKJSlv5q320IvWw9hEdtnURtbb0k3HusfZrR4UYiEewem8Nl7VqJILoCj99SjCK3W54UNPg==
   dependencies:
     "@babel/polyfill" "^7.0.0"
     "@types/bluebird" "^3.5.25"
