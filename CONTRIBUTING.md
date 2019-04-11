@@ -16,3 +16,14 @@ Then run the command
 ```
 yarn test
 ```
+
+To run tests for individual packages, check out the package.json, where you can find commands like
+```
+yarn test:core -> tests the db-graphql-filter package
+yarn test:joi -> tests the db-graphql-filter-joi package
+yarn test:knex -> tests the db-graphql-filter-knex package
+```
+
+### Core Tests
+For the core tests (db-graphql-filter package), we are using the db-graphql-filter-knex
+implementation because this was developed first.

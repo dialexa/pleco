@@ -44,7 +44,7 @@ export const getSubqueries = async (
       'id as resource_id',
       knex.raw('?? as value', column),
       knex.raw('?? as sort', column),
-    )
+    );
   });
 
   return KnexQB.bulkCreateQueries(knex, {
@@ -67,3 +67,5 @@ export const knexConfig = {
     database: process.env.POSTGRES_DB_NAME || 'querybuilder_graphql_filter_test',
   },
 };
+
+export const expectedIds = (arr: Array<{ id: string }>, indices: number[]): string[] => indices.map(i => arr[i].id);

@@ -5,7 +5,7 @@ import Knex from 'knex';
 import { KnexQB } from 'db-graphql-filter-knex';
 
 import { getFilterQuery } from 'src/functions';
-import { getSubqueries, knexConfig, snakeCase } from 'test/helpers';
+import { expectedIds, getSubqueries, knexConfig, snakeCase } from 'test/helpers';
 
 const random = new Chance();
 
@@ -113,15 +113,32 @@ describe('(Functions) Filter', () => {
     let query = knex('vehicles');
     const filter = {
       year: { eq: 2015 }
-    }
+    };
 
-    query = getFilterQuery({ filter, subqueries: vehicleSubqueries }, new KnexQB({ knex, query })).build();
+    const result = await getFilterQuery({ filter, subqueries: vehicleSubqueries }, new KnexQB({ knex, query })).build();
 
-    const result = await query;
-    expect(result.map(r => r.id)).to.have.members([vehicles[1].id, vehicles[4].id]);
+    expect(result.map(r => r.id)).to.have.members(expectedIds(vehicles, [1, 4]));
   });
-  it('should filter ne');
-  it('should filter in');
+  it('should filter ne', async () => {
+    let query = knex('vehicles');
+    const filter = {
+      year: { ne: 2016 }
+    };
+
+    const result = await getFilterQuery({ filter, subqueries: vehicleSubqueries }, new KnexQB({ knex, query })).build();
+
+    expect(result.map(r => r.id)).to.have.members(expectedIds(vehicles, [0, 1, 3, 4]));
+  });
+  it('should filter in', async () => {
+    let query = knex('vehicles');
+    const filter = {
+      year: { in: [2014, 2015] }
+    };
+
+    const result = await getFilterQuery({ filter, subqueries: vehicleSubqueries }, new KnexQB({ knex, query })).build();
+
+    expect(result.map(r => r.id)).to.have.members(expectedIds(vehicles, [0, 1, 4]));
+  });
   it('should filter nin');
   it('should filter gt');
   it('should filter gte');
@@ -136,6 +153,6 @@ describe('(Functions) Filter', () => {
   it('should filter OR');
   it('should filter AND with nested OR');
 
-  it('should use the correct subquery to filter when there are multiple subqueries')
+  it('should use the correct subquery to filter when there are multiple subqueries');
 });
 
