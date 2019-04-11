@@ -8,43 +8,44 @@
   "typings": "dist/index.d.ts",
   "files": [
     "dist/**/*"
-   ],
-   "scripts": {
-     "build": "tsc",
-     "lint": "eslint --color src/**/*.ts test/**/*.ts",
-     "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
-     "test:coverage": "nyc report --reporter=text-lcov | coveralls",
-     "precommit": "lint-staged"
-   },
-   "nyc": {
-     "include": [
-       "src/**/*.ts"
-      ],
-      "extension": [
-        ".ts"
-      ],
-      "require": [
-        "ts-node/register"
-      ],
-      "reporter": [
-        "text-summary",
-        "text",
-        "html"
-      ],
-      "sourceMap": true,
-      "instrument": true
-   },
-   "lint-staged": {
-     "src/**/*.ts": [
-       "yarn lint --fix",
-       "git add"
-     ],
-     "test/**/*.ts": [
-       "yarn lint --config test/.eslintrc.json --fix",
-       "git add"
-     ]
-   },
-   "dependencies": {
-     "graphql": "^14.1.1"
-   }
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --color src/**/*.ts test/**/*.ts",
+    "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
+    "test:coverage": "nyc report --reporter=text-lcov | coveralls",
+    "precommit": "lint-staged"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "yarn lint --fix",
+      "git add"
+    ],
+    "test/**/*.ts": [
+      "yarn lint --config test/.eslintrc.json --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "chance": "^1.0.18",
+    "graphql": "^14.1.1"
+  }
 }

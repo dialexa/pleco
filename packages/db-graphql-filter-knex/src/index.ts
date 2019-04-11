@@ -2,10 +2,11 @@ import Knex from 'knex';
 
 import * as dbGraphQLFilter from 'db-graphql-filter';
 
-import { KnexQB } from './knexqb';
+import { IConstructorArgs, KnexQB } from './knexqb';
 
 // We will override the functions
 export * from 'db-graphql-filter';
+export { KnexQB };
 
 const {
   getFilterQuery: getFilterQueryCore,
@@ -23,18 +24,15 @@ interface IGetSortQueryArgs {
   subqueries: Record<string, Knex.QueryBuilder>;
 }
 
-interface IContext {
-  knex: Knex;
-  queryBuilder: Knex.QueryBuilder;
+interface IQbAndSubqueries {
+  qb: dbGraphQLFilter.IQueryBuilder<Knex.QueryBuilder>;
+  subqueries: Record<string, dbGraphQLFilter.IQueryBuilder<Knex.QueryBuilder>>;
 }
 
-interface IQbAndSubqueries {
-  qb: KnexQB;
-  subqueries: Record<string, KnexQB>;
-}
+type IContext = IConstructorArgs;
 
 const getQbAndSubqueries = (knexSubqueries: IGetFilterQueryArgs['subqueries'], context: IContext): IQbAndSubqueries => {
-  const qb = new KnexQB({ query: context.queryBuilder });
+  const qb = new KnexQB(context);
   const subqueries = KnexQB.bulkCreateQueries(context.knex, knexSubqueries);
 
   return { qb, subqueries };

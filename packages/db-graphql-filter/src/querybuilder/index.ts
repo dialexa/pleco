@@ -1,39 +1,40 @@
 import { GraphQLFilterTypes, SortDirection } from '../types';
 
-type QueryCallback<T> = (builder: IQueryBuilder<T>) => IQueryBuilder<T>;
+type QueryCallback<T> = (builder: T) => void;
+type Raw = any; // TODO: figure out how to enforce this type
 
 // Minimalist QueryBuilder with only what we need
 export interface IQueryBuilder<T> {
-  select(raw: string): IQueryBuilder<T>;
-  from(table: string): IQueryBuilder<T>;
-  from(raw: IQueryBuilder<T>): IQueryBuilder<T>;
-  as(name: string): IQueryBuilder<T>;
+  select(raw: string): this;
+  from(table: string): this;
+  from(raw: Raw): this;
+  as(name: string): this;
 
-  leftJoin(table: string, column1: string, column2: string): IQueryBuilder<T>;
-  leftJoin(raw: IQueryBuilder<T>, column1: string, column2: string): IQueryBuilder<T>;
+  leftJoin(table: string, column1: string, column2: string): this;
+  leftJoin(raw: Raw, column1: string, column2: string): this;
 
-  whereIn(column: string, values: GraphQLFilterTypes[]): IQueryBuilder<T>;
-  whereIn(column: string, raw: IQueryBuilder<T>): IQueryBuilder<T>;
-  whereNotIn(column: string, values: GraphQLFilterTypes[]): IQueryBuilder<T>;
-  whereNotIn(column: string, raw: IQueryBuilder<T>): IQueryBuilder<T>;
+  whereIn(column: string, values: GraphQLFilterTypes[]): this;
+  whereIn(column: string, raw: Raw): this;
+  whereNotIn(column: string, values: GraphQLFilterTypes[]): this;
+  whereNotIn(column: string, raw: Raw): this;
 
-  whereNull(column: string): IQueryBuilder<T>;
-  whereNotNull(column: string): IQueryBuilder<T>;
+  whereNull(column: string): this;
+  whereNotNull(column: string): this;
 
-  where(column: string, operator: string, value: GraphQLFilterTypes): IQueryBuilder<T>;
-  where(callback: QueryCallback<T>): IQueryBuilder<T>;
+  where(column: string, operator: string, value: GraphQLFilterTypes): this;
+  where(callback: QueryCallback<this>): this;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  whereRaw(query: string, bindings?: any[]): IQueryBuilder<T>;
+  whereRaw(query: string, bindings?: any[]): this;
 
-  orWhere(callback: QueryCallback<T>): IQueryBuilder<T>;
+  orWhere(callback: QueryCallback<this>): this;
 
-  orderBy(field: string, direction: SortDirection): IQueryBuilder<T>;
+  orderBy(field: string, direction: SortDirection): this;
 
-  limit(lim: number): IQueryBuilder<T>;
-  offset(offt: number): IQueryBuilder<T>;
+  limit(lim: number): this;
+  offset(offt: number): this;
 
-  getNewInstance(): IQueryBuilder<T>;
-  clone(): IQueryBuilder<T>;
+  getNewInstance(): this;
+  clone(): this;
   build(): T;
 }

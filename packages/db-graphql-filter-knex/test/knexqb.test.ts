@@ -2,15 +2,13 @@ import { expect } from 'chai';
 import Chance from 'chance';
 import Knex from 'knex';
 
-import { IQueryBuilder } from 'db-graphql-filter';
-
 import { KnexQB } from 'src/knexqb';
 
 const random = new Chance();
 
 describe('KnexQB', () => {
   let knex: Knex;
-  let qb: IQueryBuilder<Knex.QueryBuilder>;
+  let qb: KnexQB;
 
   before(async () => {
     knex = Knex({
@@ -67,10 +65,12 @@ describe('KnexQB', () => {
   after(async () => {
     await knex.schema.dropTable('knex_join_test');
     await knex.schema.dropTable('knex_test');
+
+    await knex.destroy();
   });
 
   it('should handle select', async () => {
-    qb = new KnexQB({ query: knex('knex_test') });
+    qb = new KnexQB({ knex, query: knex('knex_test') });
     const result = await qb.select('field1').build();
     expect(result.map(r => r.field1)).to.have.members([0, 0, 0, 1]);
   });
@@ -80,7 +80,13 @@ describe('KnexQB', () => {
   it('should handle whereNull');
   it('should handle whereNotNull');
   it('should handle where column, operator, value');
-  it('should handle where with callback');
+  it('should handle where with callback', async () => {
+    qb = new KnexQB({ knex, query: knex('knex_test') });
+    const query = qb.where(builder => builder.where('field1', '=', 1)).build();
+
+    const result = await query;
+    expect(result.map(r => r.field1)).to.have.members([1]);
+  });
   it('should handle andWhere');
   it('should handle orWhere');
   it('should handle orderBy');

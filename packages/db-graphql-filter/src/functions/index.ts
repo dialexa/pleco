@@ -20,6 +20,8 @@
  *    the filter library.
  */
 
+import Chance from 'chance';
+
 import {
   IQueryBuilder,
 } from '../querybuilder';
@@ -42,7 +44,7 @@ interface IGetSortQueryArgs<Q> {
   subqueries: Record<string, IQueryBuilder<Q>>;
 }
 
-const generateRandomNumber = (): number => Math.floor(Math.random() * 1000);
+const random = new Chance();
 
 /**
  * Handles filtering
@@ -52,9 +54,8 @@ const generateRandomNumber = (): number => Math.floor(Math.random() * 1000);
  */
 export const getFilterQuery = <Q>(
   args: IGetFilterQueryArgs<Q>,
-  qb: IQueryBuilder<Q>,
+  query: IQueryBuilder<Q>,
 ): IQueryBuilder<Q> => {
-  const query = qb.clone();
   const { filter, subqueries } = args;
   if (!filter) return query;
 
@@ -63,7 +64,9 @@ export const getFilterQuery = <Q>(
 
   if (operator === 'AND') {
     ((filter as IFilterAND).AND).map(f => {
-      query.where(builder => getFilterQuery({ filter: f, subqueries }, builder));
+      query.where(builder =>
+        getFilterQuery({ filter: f, subqueries }, builder)
+      );
     });
 
     return query;
@@ -71,7 +74,9 @@ export const getFilterQuery = <Q>(
 
   if (operator === 'OR') {
     ((filter as IFilterOR).OR).map(f => {
-      query.orWhere(builder => getFilterQuery({ filter: f, subqueries }, builder));
+      query.orWhere(builder =>
+        getFilterQuery({ filter: f, subqueries }, builder)
+      );
     });
 
     return query;
@@ -109,7 +114,7 @@ export const getFilterQuery = <Q>(
     case 'contains':
       query.whereRaw('lower(value) like ?', [`%${parameter.toLowerCase()}%`]);
       break;
-    default: // Referencing a field
+    default: { // Referencing a field
       if (!subqueries[operator]) throw new Error(`Error forming filter query: missing subquery for ${operator}`);
 
       // Get the subquery
@@ -117,11 +122,11 @@ export const getFilterQuery = <Q>(
       const whereInQuery = query.getNewInstance();
       query.whereIn('id',
         whereInQuery.select('resource_id')
-          .from(subquery.as(`subquery_${operator}__${generateRandomNumber()}`)) // to avoid clashing subquery names
-          .where(builder => {
-            return getFilterQuery({ filter: filter[operator], subqueries }, builder);
-          }));
+          .from(subquery.as(`subquery_${operator}__${random.guid()}`)) // to avoid clashing subquery names
+          .where(builder =>  getFilterQuery({ filter: filter[operator], subqueries }, builder))
+      );
       break;
+    }
   }
 
   return query;
@@ -139,9 +144,8 @@ export const getFilterQuery = <Q>(
  */
 export const getSortQuery = <Q>(
   args: IGetSortQueryArgs<Q>,
-  qb: IQueryBuilder<Q>,
+  query: IQueryBuilder<Q>,
 ): IQueryBuilder<Q> => {
-  const query = qb.clone();
   const { sort, subqueries } = args;
   if (!sort) return query;
 
@@ -170,9 +174,8 @@ export const getSortQuery = <Q>(
  */
 export const getPageLimitOffsetQuery = <Q>(
   page: ILimitOffsetPage,
-  qb: IQueryBuilder<Q>,
+  query: IQueryBuilder<Q>,
 ): IQueryBuilder<Q> => {
-  const query = qb.clone();
   if (!page || !page.limit) return query;
 
   const options = { ...limitOffsetPageDefault, ...page };

@@ -44,9 +44,10 @@ const filter = {
   ]
 };
 
-let query = knex('vehicles').where(builder => {
-  builder = getFilterQuery({ filter, subqueries }, { knex, queryBuilder: builder });
-});
+let query = knex('vehicles').where(builder =>
+  // mutate tells us to edit the builder object passed by reference instead of cloning
+  getFilterQuery({ filter, subqueries }, { knex, query: builder, mutate: true });
+);
 ```
 
 ### getSortQuery
@@ -56,7 +57,7 @@ import { getSortQuery } from 'db-graphql-filter-knex';
 
 const sort = { userSurveyRating: 'asc' };
 
-query = getSortQuery({ sort, subqueries }, { knex, queryBuilder: query });
+query = getSortQuery({ sort, subqueries }, { knex, query });
 ```
 
 ### getPageLimitOffsetQuery
@@ -67,5 +68,5 @@ let query = knex('vehicles');
 // Page 3 with page sizes as 25
 const page = { limit: 25, offset: 50 };
 
-query = getPageLimitOffsetQuery(page, { knex, queryBuilder: query });
+query = getPageLimitOffsetQuery(page, { knex, query });
 ```
