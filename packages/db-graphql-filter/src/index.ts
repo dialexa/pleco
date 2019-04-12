@@ -10,6 +10,7 @@ export {
 export {
   IFilter,
   IFilterQuery,
+  ISort,
   ILimitOffsetPage,
   SortDirection,
 } from './types';

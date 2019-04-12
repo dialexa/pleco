@@ -44,6 +44,6 @@
   },
   "dependencies": {
     "db-graphql-filter": "file:../db-graphql-filter",
-    "knex": "^0.16.0"
+    "knex": "^0.16.5"
   }
 }

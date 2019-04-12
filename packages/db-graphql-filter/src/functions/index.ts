@@ -30,8 +30,7 @@ import {
   IFilterAND,
   IFilterOR,
   ILimitOffsetPage,
-  limitOffsetPageDefault,
-  SortDirection,
+  ISort,
 } from '../types';
 
 interface IGetFilterQueryArgs<Q> {
@@ -40,7 +39,7 @@ interface IGetFilterQueryArgs<Q> {
 }
 
 interface IGetSortQueryArgs<Q> {
-  sort: SortDirection;
+  sort: ISort;
   subqueries: Record<string, IQueryBuilder<Q>>;
 }
 
@@ -63,8 +62,8 @@ export const getFilterQuery = <Q>(
   if (!operator) return query;
 
   if (operator === 'AND') {
-    ((filter as IFilterAND).AND).map(f => {
-      query.where(builder =>
+    ((filter as IFilterAND).AND).map((f) => {
+      query.where((builder) =>
         getFilterQuery({ filter: f, subqueries }, builder)
       );
     });
@@ -73,8 +72,8 @@ export const getFilterQuery = <Q>(
   }
 
   if (operator === 'OR') {
-    ((filter as IFilterOR).OR).map(f => {
-      query.orWhere(builder =>
+    ((filter as IFilterOR).OR).map((f) => {
+      query.orWhere((builder) =>
         getFilterQuery({ filter: f, subqueries }, builder)
       );
     });
@@ -123,7 +122,7 @@ export const getFilterQuery = <Q>(
       query.whereIn('id',
         whereInQuery.select('resource_id')
           .from(subquery.as(`subquery_${operator}__${random.guid()}`)) // to avoid clashing subquery names
-          .where(builder =>  getFilterQuery({ filter: filter[operator], subqueries }, builder))
+          .where((builder) => getFilterQuery({ filter: filter[operator], subqueries }, builder))
       );
       break;
     }
@@ -176,9 +175,16 @@ export const getPageLimitOffsetQuery = <Q>(
   page: ILimitOffsetPage,
   query: IQueryBuilder<Q>,
 ): IQueryBuilder<Q> => {
-  if (!page || !page.limit) return query;
+  if (!page) return query;
 
-  const options = { ...limitOffsetPageDefault, ...page };
+  const defaults = {
+    offset: 0,
+  };
 
-  return query.limit(options.limit).offset(options.offset);
+  const options = { ...defaults, ...page };
+
+  query.offset(options.offset);
+  if (options.limit !== undefined) query.limit(options.limit);
+
+  return query;
 };

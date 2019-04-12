@@ -33,10 +33,8 @@ export type IFilterQuery<T extends GraphQLFilterTypes> = IFilterQueryANDOR<T> | 
 
 export type SortDirection = 'ASC' | 'DESC';
 
-export const limitOffsetPageDefault = {
-  limit: 0,
-  offset: 0,
-};
+export type ISort = Record<string, SortDirection>;
+
 
 export interface ILimitOffsetPage {
   limit: number;

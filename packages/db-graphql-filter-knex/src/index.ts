@@ -11,7 +11,7 @@ export { KnexQB };
 const {
   getFilterQuery: getFilterQueryCore,
   getPageLimitOffsetQuery: getPLOffsetQueryCore,
-  getSortQuery: getSortQueryCore
+  getSortQuery: getSortQueryCore,
 } = dbGraphQLFilter;
 
 interface IGetFilterQueryArgs {
@@ -20,7 +20,7 @@ interface IGetFilterQueryArgs {
 }
 
 interface IGetSortQueryArgs {
-  sort: dbGraphQLFilter.SortDirection;
+  sort: dbGraphQLFilter.ISort;
   subqueries: Record<string, Knex.QueryBuilder>;
 }
 
@@ -36,7 +36,7 @@ const getQbAndSubqueries = (knexSubqueries: IGetFilterQueryArgs['subqueries'], c
   const subqueries = KnexQB.bulkCreateQueries(context.knex, knexSubqueries);
 
   return { qb, subqueries };
-}
+};
 
 export const getFilterQuery = (args: IGetFilterQueryArgs, context: IContext): Knex.QueryBuilder => {
   const { qb, subqueries } = getQbAndSubqueries(args.subqueries, context);
@@ -51,7 +51,7 @@ export const getPageLimitOffsetQuery = (page: dbGraphQLFilter.ILimitOffsetPage, 
 };
 
 export const getSortQuery = (args: IGetSortQueryArgs, context: IContext): Knex.QueryBuilder => {
-  const { qb, subqueries } = getQbAndSubqueries(args.subqueries, context)
+  const { qb, subqueries } = getQbAndSubqueries(args.subqueries, context);
 
   return getSortQueryCore({ ...args, subqueries }, qb).build();
-}
+};

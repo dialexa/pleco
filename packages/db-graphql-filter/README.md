@@ -130,7 +130,9 @@ The typescript types can be found in `src/types/index.ts`. These act as a transl
 `IFilterQuery<T>`: a generic interface that takes a type argument with a union type of all the GraphQL operations (in, nin, etc).
 `IFilterQuery` assumes 1 operation per object. More about this in the [joi validation section](#joi-validation-schemas).
 
-`SortDirection`: a union type of 'asc' and 'desc'
+`SortDirection`: a union type of 'ASC' and 'DESC'
+
+`ISort`: a dictionary of string to `SortDirection`
 
 `ILimitOffsetPage`: an object containing limit and offset as numberse to provide pagination arguments
 
@@ -342,6 +344,7 @@ columnNames.forEach(column => {
 });
 ```
 
-## Known Limitations
-1. Cursor pagination is currently unsupported
-2. The id column must be named `id`
+## Known Limitations and Bugs
+- Cursor pagination is currently unsupported. [Issue](https://github.com/dialexa/db-graphql-filter/issues/6)
+- The id column must be named `id`. [Issue](https://github.com/dialexa/db-graphql-filter/issues/8)
+- Sorting will break if the query does not have an id selected. [Issue](https://github.com/dialexa/db-graphql-filter/issues/7)
