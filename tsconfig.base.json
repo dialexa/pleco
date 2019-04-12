@@ -6,6 +6,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node"]
   }
 }

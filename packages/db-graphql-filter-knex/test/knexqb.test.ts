@@ -26,14 +26,14 @@ describe('KnexQB', () => {
       },
     });
 
-    await knex.schema.createTable('knex_test', t => {
+    await knex.schema.createTable('knex_test', (t) => {
       t.uuid('id').primary();
       t.integer('field1');
       t.integer('field2');
       t.integer('field3');
     });
 
-    await knex.schema.createTable('knex_join_test', t => {
+    await knex.schema.createTable('knex_join_test', (t) => {
       t.uuid('id').primary();
       t.uuid('join_column').references('id').inTable('knex_test');
       t.integer('field1');
@@ -72,7 +72,7 @@ describe('KnexQB', () => {
   it('should handle select', async () => {
     qb = new KnexQB({ knex, query: knex('knex_test') });
     const result = await qb.select('field1').build();
-    expect(result.map(r => r.field1)).to.have.members([0, 0, 0, 1]);
+    expect(result.map((r) => r.field1)).to.have.members([0, 0, 0, 1]);
   });
   it('should handle leftJoin');
   it('should handle whereIn');
@@ -82,10 +82,10 @@ describe('KnexQB', () => {
   it('should handle where column, operator, value');
   it('should handle where with callback', async () => {
     qb = new KnexQB({ knex, query: knex('knex_test') });
-    const query = qb.where(builder => builder.where('field1', '=', 1)).build();
+    const query = qb.where((builder) => builder.where('field1', '=', 1)).build();
 
     const result = await query;
-    expect(result.map(r => r.field1)).to.have.members([1]);
+    expect(result.map((r) => r.field1)).to.have.members([1]);
   });
   it('should handle andWhere');
   it('should handle orWhere');
