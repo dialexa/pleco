@@ -8,5 +8,8 @@
       "test/*": ["test/*"]
     }
   },
-  "include": ["../src/**/*.ts", "./**/*.ts"]
+  "include": ["../src/**/*.ts", "./**/*.ts"],
+  "references": [
+    { "path": "../../db-graphql-filter-knex" }
+  ]
 }

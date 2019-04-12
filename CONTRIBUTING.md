@@ -9,19 +9,19 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=
-POSTGRES_DB_NAME=querybuilder_graphql_filter_test
+POSTGRES_DB=querybuilder_graphql_filter_test
 ```
 
 Then run the command
 ```
-yarn test
+npm run test
 ```
 
 To run tests for individual packages, check out the package.json, where you can find commands like
 ```
-yarn test:core -> tests the db-graphql-filter package
-yarn test:joi -> tests the db-graphql-filter-joi package
-yarn test:knex -> tests the db-graphql-filter-knex package
+npm run test:core -> tests the db-graphql-filter package
+npm run test:joi -> tests the db-graphql-filter-joi package
+npm run test:knex -> tests the db-graphql-filter-knex package
 ```
 
 ### Core Tests

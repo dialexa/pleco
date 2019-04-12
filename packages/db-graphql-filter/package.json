@@ -36,11 +36,11 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "yarn lint --fix",
+      "npm run lint --fix",
       "git add"
     ],
     "test/**/*.ts": [
-      "yarn lint --config test/.eslintrc.json --fix",
+      "npm run lint --config test/.eslintrc.json --fix",
       "git add"
     ]
   },

@@ -1,18 +1,19 @@
 {
    "name": "db-graphql-filter-monorepo",
    "version": "0.1.0",
-   "description": "A library for filtering resources in GraphQL on the database layer",
+   "description": "A collection of utilities for querying the database",
    "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
    "license": "MIT",
+   "repository": "https://github.com/dialexa/db-graphql-filter",
    "scripts": {
-      "build": "lerna run --concurrency=1 --stream build",
+      "build": "tsc --build tsconfig.build.json",
       "lint": "lerna run --concurrency=1 --stream lint",
       "test": "lerna run --parallel --stream test",
-      "test:core": "yarn test --scope db-graphql-filter",
-      "test:knex": "yarn test --scope db-graphql-filter-knex",
-      "test:joi": "yarn test --scope db-graphql-filter-joi",
+      "test:core": "npm run test --scope db-graphql-filter",
+      "test:knex": "npm run test --scope db-graphql-filter-knex",
+      "test:joi": "npm run test --scope db-graphql-filter-joi",
       "coverage": "lerna run --parallel test:coverage",
-      "clean": "rm -rf ./**/node_modules && sh -c \"lerna exec --parallel -- rm -rf node_modules\" && lerna exec --parallel yarn install"
+      "clean": "git clean -dfqX -- ./node_modules **/{dist,node_modules}/ ./packages/*/tsconfig*tsbuildinfo"
    },
    "husky": {
       "hooks": {

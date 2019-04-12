@@ -3,10 +3,13 @@
     "target": "es6",
     "lib": ["es6", "esnext", "dom"],
     "module": "commonjs",
+    "moduleResolution": "node",
     "declaration": true,
+    "declarationMap": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
     "sourceMap": true,
+    "composite": true,
     "types": ["node"]
   }
 }

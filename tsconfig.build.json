@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/db-graphql-filter" },
+    { "path": "./packages/db-graphql-filter-joi" },
+    { "path": "./packages/db-graphql-filter-knex" }
+  ]
+}

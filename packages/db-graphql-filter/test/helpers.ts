@@ -10,12 +10,12 @@ function transform<T>(data: T | T[], func: Function): T | T[] {
   if (!data) {
     return data;
   } else if (Array.isArray(data)) {
-    return data.map(elem => transform(elem, func));
+    return data.map((elem) => transform(elem, func));
   } else if (typeof data === 'object') {
     return _.mapKeys(data, (value, key) => transform(key, func));
-  } else {
-    return func(data);
   }
+  return func(data);
+
 }
 
 export function camelCase<T>(data: T): T;
@@ -39,7 +39,7 @@ export const getSubqueries = async (
 ): Promise<Record<string, KnexQB>> => {
   const columnNames = await knex(table).columnInfo().then(Object.keys);
   const columnSubqueries: Record<string, Knex.QueryBuilder> = {};
-  columnNames.forEach(column => {
+  columnNames.forEach((column) => {
     columnSubqueries[camelCase(column)] = knex(table).select(
       'id as resource_id',
       knex.raw('?? as value', column),
@@ -64,8 +64,8 @@ export const knexConfig = {
     port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
     user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD || '',
-    database: process.env.POSTGRES_DB_NAME || 'querybuilder_graphql_filter_test',
+    database: process.env.POSTGRES_DB || 'querybuilder_graphql_filter_test',
   },
 };
 
-export const expectedIds = (arr: Array<{ id: string }>, indices: number[]): string[] => indices.map(i => arr[i].id);
+export const expectedIds = (arr: Array<{ id: string }>, indices: number[]): string[] => indices.map((i) => arr[i].id);
