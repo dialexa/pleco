@@ -115,9 +115,11 @@ Current supported query builders:
 
 | library | db-query-utils extension |
 |---------|-----------------------------|
-| knex    | [db-query-utils-knex](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils-knex)      |
+| knex    | [db-query-utils-knex](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils-knex) |
 
 ## Known Limitations
 1. Cursor pagination is currently unsupported
 2. The id column must be named `id`
 3. Multiple sorts is not supported
+
+As always, check the Issues
