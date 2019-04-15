@@ -1,5 +1,14 @@
 # DB GraphQL Filter Knex
 
+## Table of Contents
+- [Overview](#overview)
+- [Function Usage](#function-usage)
+  * [getFilterQuery](#getfilterquery)
+  * [getSortQuery](#getsortquery)
+  * [getPageLimitOffsetQuery](#getpagelimitoffsetquery)
+- [Recipes](#recipes)
+  * [Automating the Creation of Subqueries for Each Column](#automating-the-creation-of-subqueries-for-each-column)
+
 ## Overview
 db-query-utils-knex provides all the same exports as db-query-utils, but overrides the functions
 for ease of use.
@@ -69,4 +78,20 @@ let query = knex('vehicles');
 const page = { limit: 25, offset: 50 };
 
 query = getPageLimitOffsetQuery(page, { knex, query });
+```
+
+## Recipes
+### Automating the Creation of Subqueries for Each Column
+It is tedious to have to make subqueries for each column manually. We have found use in the following for postgres + knex:
+```ts
+const columnNames = await knex('vehicles').columnInfo().then(Object.keys);
+
+const subqueries = {};
+columnNames.forEach(column => {
+  subqueries[convertToCamelcase(column)] = knex('vehicles').select(
+    'id as resource_id',
+    knex.raw('?? as value', [ column ]),
+    knex.raw('?? as sort', [ column ]),
+  )
+});
 ```

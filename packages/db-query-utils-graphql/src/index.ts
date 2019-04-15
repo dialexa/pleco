@@ -93,7 +93,7 @@ export const GraphQLLimitOffsetPage: GraphQLInputObjectType = new GraphQLInputOb
   },
 });
 
-export const graphQLFilterTypes = [
+export const graphQLTypes = [
   printType(GraphQLFilterQueryFloat),
   printType(GraphQLFilterQueryID),
   printType(GraphQLFilterQueryInt),
