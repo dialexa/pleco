@@ -51,6 +51,7 @@
    },
    "dependencies": {
       "db-query-utils": "file:packages/db-query-utils",
+      "db-query-utils-graphql": "file:packages/db-query-utils-graphql",
       "db-query-utils-joi": "file:packages/db-query-utils-joi",
       "db-query-utils-knex": "file:packages/db-query-utils-knex"
    }

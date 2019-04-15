@@ -1,13 +1,4 @@
 export {
-  GraphQLFilterQueryFloat,
-  GraphQLFilterQueryID,
-  GraphQLFilterQueryInt,
-  GraphQLFilterQueryString,
-  graphQLFilterTypes,
-  GraphQLSortDirection,
-} from './graphql';
-
-export {
   IFilter,
   IFilterQuery,
   ISort,

@@ -6,6 +6,7 @@
   "include": [],
   "references": [
     { "path": "./packages/db-query-utils" },
+    { "path": "./packages/db-query-utils-graphql" },
     { "path": "./packages/db-query-utils-joi" },
     { "path": "./packages/db-query-utils-knex" }
   ]
