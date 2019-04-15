@@ -1,32 +1,32 @@
 import Knex from 'knex';
 
-import * as dbGraphQLFilter from 'db-graphql-filter';
+import * as dbQuery from 'db-query-utils';
 
 import { IConstructorArgs, KnexQB } from './knexqb';
 
 // We will override the functions
-export * from 'db-graphql-filter';
+export * from 'db-query-utils';
 export { KnexQB };
 
 const {
   getFilterQuery: getFilterQueryCore,
   getPageLimitOffsetQuery: getPLOffsetQueryCore,
   getSortQuery: getSortQueryCore,
-} = dbGraphQLFilter;
+} = dbQuery;
 
 interface IGetFilterQueryArgs {
-  filter: dbGraphQLFilter.IFilter;
+  filter: dbQuery.IFilter;
   subqueries: Record<string, Knex.QueryBuilder>;
 }
 
 interface IGetSortQueryArgs {
-  sort: dbGraphQLFilter.ISort;
+  sort: dbQuery.ISort;
   subqueries: Record<string, Knex.QueryBuilder>;
 }
 
 interface IQbAndSubqueries {
-  qb: dbGraphQLFilter.IQueryBuilder<Knex.QueryBuilder>;
-  subqueries: Record<string, dbGraphQLFilter.IQueryBuilder<Knex.QueryBuilder>>;
+  qb: dbQuery.IQueryBuilder<Knex.QueryBuilder>;
+  subqueries: Record<string, dbQuery.IQueryBuilder<Knex.QueryBuilder>>;
 }
 
 type IContext = IConstructorArgs;
@@ -44,7 +44,7 @@ export const getFilterQuery = (args: IGetFilterQueryArgs, context: IContext): Kn
   return getFilterQueryCore({ ...args, subqueries }, qb).build();
 };
 
-export const getPageLimitOffsetQuery = (page: dbGraphQLFilter.ILimitOffsetPage, context: IContext): Knex.QueryBuilder => {
+export const getPageLimitOffsetQuery = (page: dbQuery.ILimitOffsetPage, context: IContext): Knex.QueryBuilder => {
   const { qb } = getQbAndSubqueries({}, context);
 
   return getPLOffsetQueryCore(page, qb).build();
