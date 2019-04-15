@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import _ from 'lodash';
 
-import { KnexQB } from 'db-graphql-filter-knex';
+import { KnexQB } from 'db-query-utils-knex';
 
 function transform<T>(data: T, func: Function): T;
 function transform<T>(data: T[], func: Function): T[];
@@ -64,7 +64,7 @@ export const knexConfig = {
     port: parseInt(process.env.POSTGRES_PORT, 10) || 5432,
     user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD || '',
-    database: process.env.POSTGRES_DB || 'querybuilder_graphql_filter_test',
+    database: process.env.POSTGRES_DB || 'db_query_utils_test',
   },
 };
 

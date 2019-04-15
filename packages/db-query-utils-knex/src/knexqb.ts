@@ -1,4 +1,4 @@
-import { IQueryBuilder } from 'db-graphql-filter';
+import { IQueryBuilder } from 'db-query-utils';
 import Knex from 'knex';
 
 export interface IConstructorArgs {

@@ -1,5 +1,5 @@
 {
-  "name": "db-graphql-filter",
+  "name": "db-query-utils",
   "version": "0.1.0",
   "description": "A library for filtering resources in GraphQL on the database layer",
   "main": "dist/index.js",

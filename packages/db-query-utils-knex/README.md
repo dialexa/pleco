@@ -1,13 +1,13 @@
 # DB GraphQL Filter Knex
 
 ## Overview
-db-graphql-filter-knex provides all the same exports as db-graphql-filter, but overrides the functions
+db-query-utils-knex provides all the same exports as db-query-utils, but overrides the functions
 for ease of use.
 
 ## Function Usage
 ### getFilterQuery
 ```ts
-import { getFilterQuery } from 'db-graphql-filter-knex';
+import { getFilterQuery } from '@dialexa/db-query-utils-knex';
 
 const make = knex('vehicles').select('id as resource_id', 'make as value', 'make as sort');
 const model = knex('vehicles').select('id as resource_id', 'model as value', 'model as sort');
@@ -53,16 +53,16 @@ let query = knex('vehicles').where(builder =>
 ### getSortQuery
 Continuing from the code snippet for the [filter function](#getfilterquery)
 ```ts
-import { getSortQuery } from 'db-graphql-filter-knex';
+import { getSortQuery } from '@dialexa/db-query-utils-knex';
 
-const sort = { userSurveyRating: 'asc' };
+const sort = { userSurveyRating: 'ASC' };
 
 query = getSortQuery({ sort, subqueries }, { knex, query });
 ```
 
 ### getPageLimitOffsetQuery
 ```ts
-import { getPageLimitOffsetQuery  } from 'db-graphql-filter-knex';
+import { getPageLimitOffsetQuery  } from '@dialexa/db-query-utils-knex';
 
 let query = knex('vehicles');
 // Page 3 with page sizes as 25

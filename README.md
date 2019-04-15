@@ -1,9 +1,9 @@
-# DB GraphQL Filter
+# DB Query Utils
 
-[![CircleCI](https://circleci.com/gh/dialexa/db-query/tree/v1.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/db-graphql-filter/tree/v1)
+[![CircleCI](https://circleci.com/gh/dialexa/db-query-utils/tree/v1.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/db-query-utils/tree/v1)
 
 ## Overview
-db-graphql-filter provides 4 things to make filtering easier with GraphQL on the database layer. The library
+db-query-utils provides 4 things to make filtering easier with GraphQL on the database layer. The library
 is inspired by MongoDB's filtering syntax.
 1. [GraphQL Types](#graphql-types)
 2. [Typescript Types](#typescript-types)
@@ -32,7 +32,7 @@ abilities with `AND` and `OR`.
 | lte       |                 | ✔                   | ✔                | ✔                  |
 | contains  |                 | ✔                   |                  |                    |
 
-In addition to the 4 `FilterQuery_*` types, db-graphql-filter also provides
+In addition to the 4 `FilterQuery_*` types, db-query-utils also provides
 - `SortDirection`: an enum of `ASC` and `DESC`
 - `LimitOffsetPage`: an input object with limit and offset
 - `graphQLFilterTypes` which is a string containing the definitions of all the types in SDL.
@@ -139,7 +139,7 @@ The typescript types can be found in `src/types/index.ts`. These act as a transl
 ### Usage
 If we wanted to translate the `VehicleFilterInput` GraphQL type to Typescript, this is what we would do:
 ```ts
-import { IFilterQuery } from 'db-graphql-filter';
+import { IFilterQuery } from '@dialexa/db-query-utils';
 
 export interface IVehicleFilterInput {
   AND: IVehicleFilterInput[];
@@ -169,7 +169,7 @@ The rules for filters are:
 
 #### Usage
 ```ts
-import { filterQuerySchema } from 'db-graphql-filter';
+import { filterQuerySchema } from '@dialexa/db-query-utils';
 
 const vehicleFilterSchemaKeys = {
   AND: Joi.array().items(Joi.lazy(() => vehicleFilterSchema)),
@@ -191,7 +191,7 @@ Validating against this schema will also automatically convert the input to uppe
 
 #### Usage
 ```ts
-import { sortDirectionSchema } from 'db-graphql-filter';
+import { sortDirectionSchema } from '@dialexa/db-query-utils';
 
 const vehicleSortSchemaKeys = {
   numberOfUsers: sortDirectionSchema,
@@ -208,14 +208,14 @@ The functions that do all the heavy lifting are in `src/functions/index.ts`. Ref
 package to view the usage for each function.
 
 ### Prerequisites
-Before we dive into the functions that are provided, `db-graphql-filter` has some prerequisites
+Before we dive into the functions that are provided, `db-query-utils` has some prerequisites
 that must be met for the functions to work. Because of the nature of supporting multiple query builders,
 extensions must be used to properly call the methods. To convert your query builder to the generic
-query builder that `db-graphql-filter` uses, refer to the extension library documentation.
+query builder that `db-query-utils` uses, refer to the extension library documentation.
 
 For more information about the generic query builder, refer to the [Extensions section](#extensions)
 
-Note that all of the examples in this README are using the `db-graphql-filter-knex` extension.
+Note that all of the examples in this README are using the `db-query-utils-knex` extension.
 
 ### getFilterQuery
 This function forms the filter query. The arguments are
@@ -237,13 +237,13 @@ This function forms the filter query. The arguments are
    the filter library.
 
 #### Usage
-See [db-graphql-filter-querybuilder-name](#extensions)
+See [db-query-utils-querybuilder-name](#extensions)
 
 ### getSortQuery
 This function provides sorting functionality. Currently, sorting by, then by is not supported.
 
 #### Usage
-See [db-graphql-filter-querybuilder-name](#extensions)
+See [db-query-utils-querybuilder-name](#extensions)
 
 ### getPageLimitOffsetQuery
 This function returns a query with `limit` and `offset`. Empty options can
@@ -251,10 +251,10 @@ also be passed, so it is safe to call `formPageLimitOffsetQuery` even
 with bogus options.
 
 #### Usage
-See [db-graphql-filter-querybuilder-name](#extensions)
+See [db-query-utils-querybuilder-name](#extensions)
 
 ## Extensions
-`db-graphql-filter` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
+`db-query-utils` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
 interface that only requires a subset of a full query builder features. To support another query builder,
 all that is needed is to implement the features needed in the required query builder.
 
@@ -263,9 +263,9 @@ but all extensions will convert back to your query builder by calling `.build()`
 
 Current supported query builders:
 
-| library | db-graphql-filter extension |
+| library | db-query-utils extension |
 |---------|-----------------------------|
-| knex    | [db-graphql-filter-knex](https://github.com/dialexa/db-graphql-filter/tree/v1/packages/db-graphql-filter-knex)      |
+| knex    | [db-query-utils-knex](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils-knex)      |
 
 ## Recipes
 ### Automating the Creation of Subqueries for Each Column

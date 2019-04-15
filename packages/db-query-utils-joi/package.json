@@ -1,12 +1,13 @@
 {
-  "name": "db-graphql-filter-knex",
+  "name": "db-query-utils-joi",
   "version": "0.1.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
   "files": [
     "dist/**/*"
   ],
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "lint": "eslint --color src/**/*.ts test/**/*.ts",
@@ -20,17 +21,17 @@
     ],
     "extension": [
       ".ts"
-      ],
-      "require": [
-        "ts-node/register"
-      ],
-      "reporter": [
-        "text-summary",
-        "text",
-        "html"
-      ],
-      "sourceMap": true,
-      "instrument": true
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -43,7 +44,6 @@
     ]
   },
   "dependencies": {
-    "db-graphql-filter": "file:../db-graphql-filter",
-    "knex": "^0.16.5"
+    "joi": "^14.3.1"
   }
 }

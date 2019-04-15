@@ -1,17 +1,17 @@
 {
-   "name": "db-graphql-filter-monorepo",
+   "name": "db-query-utils-monorepo",
    "version": "0.1.0",
-   "description": "A collection of utilities for querying the database",
+   "description": "A collection of utilities for query-utilsing the database",
    "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
    "license": "MIT",
-   "repository": "https://github.com/dialexa/db-graphql-filter",
+   "repository": "https://github.com/dialexa/db-query-utils",
    "scripts": {
       "build": "tsc --build tsconfig.build.json",
       "lint": "lerna run --concurrency=1 --stream lint",
       "test": "lerna run --parallel --stream test",
-      "test:core": "npm run test --scope db-graphql-filter",
-      "test:knex": "npm run test --scope db-graphql-filter-knex",
-      "test:joi": "npm run test --scope db-graphql-filter-joi",
+      "test:core": "npm run test --scope db-query-utils",
+      "test:knex": "npm run test --scope db-query-utils-knex",
+      "test:joi": "npm run test --scope db-query-utils-joi",
       "coverage": "lerna run --parallel test:coverage",
       "clean": "git clean -dfqX -- ./node_modules **/{dist,node_modules}/ ./packages/*/tsconfig*tsbuildinfo"
    },
@@ -50,8 +50,8 @@
       "typescript": "^3.3.1"
    },
    "dependencies": {
-      "db-graphql-filter": "file:packages/db-graphql-filter",
-      "db-graphql-filter-joi": "file:packages/db-graphql-filter-joi",
-      "db-graphql-filter-knex": "file:packages/db-graphql-filter-knex"
+      "db-query-utils": "file:packages/db-query-utils",
+      "db-query-utils-joi": "file:packages/db-query-utils-joi",
+      "db-query-utils-knex": "file:packages/db-query-utils-knex"
    }
 }

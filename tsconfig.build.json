@@ -5,8 +5,8 @@
   "files": [],
   "include": [],
   "references": [
-    { "path": "./packages/db-graphql-filter" },
-    { "path": "./packages/db-graphql-filter-joi" },
-    { "path": "./packages/db-graphql-filter-knex" }
+    { "path": "./packages/db-query-utils" },
+    { "path": "./packages/db-query-utils-joi" },
+    { "path": "./packages/db-query-utils-knex" }
   ]
 }
