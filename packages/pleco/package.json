@@ -6,6 +6,7 @@
   "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
   "license": "MIT",
   "typings": "dist/index.d.ts",
+  "repository": "https://github.com/dialexa/pleco/tree/master/packages/pleco",
   "files": [
     "dist/**/*"
   ],
