@@ -1,5 +1,5 @@
 {
-   "name": "pleco-monorepo",
+   "name": "@dialexa/pleco-monorepo",
    "version": "0.1.0",
    "description": "A collection of utilities for querying the database",
    "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
