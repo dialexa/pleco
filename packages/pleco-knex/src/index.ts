@@ -1,11 +1,11 @@
 import Knex from 'knex';
 
-import * as dbQuery from 'pleco';
+import * as dbQuery from '@dialexa/pleco';
 
 import { IConstructorArgs, KnexQB } from './knexqb';
 
 // We will override the functions
-export * from 'pleco';
+export * from '@dialexa/pleco';
 export { KnexQB };
 
 const {

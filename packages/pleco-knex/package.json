@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "knex": "^0.16.5",
-    "pleco": "file:../pleco"
+    "@dialexa/pleco": "file:../pleco"
   }
 }
