@@ -1,0 +1,51 @@
+{
+  "name": "@dialexa/pleco-graphql",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --color src/**/*.ts test/**/*.ts",
+    "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
+    "test:coverage": "nyc report --reporter=text-lcov | coveralls",
+    "precommit": "lint-staged"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "npm run lint --fix",
+      "git add"
+    ],
+    "test/**/*.ts": [
+      "npm run lint --config test/.eslintrc.json --fix",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "graphql": "^14.2.1"
+  }
+}

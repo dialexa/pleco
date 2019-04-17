@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.15.1
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+          TEST_DATABASE_URL: postgresql://postgres@localhost/circle_test
+      - image: circleci/postgres:9.6.2-alpine
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: dependency-cache-{{ checksum "package.json" }}
+
+      - run:
+          name: Lint
+          command: npm run lint
+
+      - run:
+          name: Build
+          command: npm run build
+
+      - run: npm run test

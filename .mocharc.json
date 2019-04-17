@@ -1,0 +1,4 @@
+{
+  "require": ["ts-node/register", "tsconfig-paths/register"],
+  "file": "./test/testSetup.ts"
+}

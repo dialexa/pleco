@@ -1,0 +1,31 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": ["@dialexa/eslint-config-dialexa/node-es6", "plugin:@typescript-eslint/recommended"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "import"],
+  "rules": {
+    "@typescript-eslint/array-type": ["error", "array-simple"],
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/interface-name-prefix": ["error", "always"],
+
+    "import/no-default-export": 2,
+
+    "indent": 0,
+    "max-len": [2, { "code": 140, "ignoreComments": true }],
+    "no-undef": 0,
+    "semi": [2, "always"],
+    "comma-dangle": [2, "always-multiline"]
+  }
+}

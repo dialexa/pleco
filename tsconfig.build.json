@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/pleco" },
+    { "path": "./packages/pleco-graphql" },
+    { "path": "./packages/pleco-joi" },
+    { "path": "./packages/pleco-knex" }
+  ]
+}
