@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import _ from 'lodash';
 
-import { KnexQB } from 'pleco-knex';
+import { KnexQB } from '@dialexa/pleco-knex';
 
 function transform<T>(data: T, func: Function): T;
 function transform<T>(data: T[], func: Function): T[];
