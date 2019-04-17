@@ -1,6 +1,6 @@
 {
   "name": "@dialexa/pleco-knex",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/dialexa/pleco/tree/master/packages/pleco-knex",
@@ -47,7 +47,7 @@
     ]
   },
   "dependencies": {
-    "knex": "^0.16.5",
-    "@dialexa/pleco": "file:../pleco"
+    "@dialexa/pleco": "file:../pleco",
+    "knex": "^0.16.5"
   }
 }
