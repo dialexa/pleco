@@ -1,4 +1,4 @@
-# DB Query Utils - Joi
+# Pleco - Joi
 
 ## Table of Contents
 - [Overview](#overview)
