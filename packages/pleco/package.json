@@ -16,6 +16,9 @@
     "test:coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "lint-staged"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "nyc": {
     "include": [
       "src/**/*.ts"
