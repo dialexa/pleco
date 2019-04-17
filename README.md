@@ -1,6 +1,6 @@
 # Pleco
 
-[![CircleCI](https://circleci.com/gh/dialexa/pleco/tree/v1.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/pleco/tree/v1)
+[![CircleCI](https://circleci.com/gh/dialexa/pleco/tree/master.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/pleco/tree/master)
 
 ## Table of Contents
 - [Overview](#overview)
@@ -115,7 +115,7 @@ Current supported query builders:
 
 | library | pleco extension |
 |---------|-----------------------------|
-| knex    | [pleco-knex](https://github.com/dialexa/pleco/tree/v1/packages/pleco-knex) |
+| knex    | [pleco-knex](https://github.com/dialexa/pleco/tree/master/packages/pleco-knex) |
 
 ## Known Limitations
 1. Cursor pagination is currently unsupported

@@ -58,5 +58,5 @@ const vehicleSortSchema = Joi.object().keys(vehicleSortSchemaKeys).oxor(Object.k
 `limitOffsetPageSchema`: validates that an object containing optional `limit` and `offset` are non-negative integers
 
 ## Resources
-- [GraphQL Types](https://github.com/dialexa/pleco/tree/v1/packages/pleco-graphql)
-- [Typescript Types](https://github.com/dialexa/pleco/tree/v1/packages/pleco)
+- [GraphQL Types](https://github.com/dialexa/pleco/tree/master/packages/pleco-graphql)
+- [Typescript Types](https://github.com/dialexa/pleco/tree/master/packages/pleco)
