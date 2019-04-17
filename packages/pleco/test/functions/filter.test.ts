@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import Chance from 'chance';
 import Knex from 'knex';
 
-import { KnexQB } from 'db-query-utils-knex';
+import { KnexQB } from 'pleco-knex';
 
 import { getFilterQuery } from 'src/functions';
 import { expectedIds, getSubqueries, knexConfig, snakeCase } from 'test/helpers';

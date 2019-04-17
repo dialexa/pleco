@@ -1,8 +1,7 @@
 {
-  "name": "db-query-utils-joi",
+  "name": "pleco-graphql",
   "version": "0.1.0",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
@@ -44,6 +43,6 @@
     ]
   },
   "dependencies": {
-    "joi": "^14.3.1"
+    "graphql": "^14.2.1"
   }
 }

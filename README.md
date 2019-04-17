@@ -1,6 +1,6 @@
-# DB Query Utils
+# Pleco
 
-[![CircleCI](https://circleci.com/gh/dialexa/db-query-utils/tree/v1.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/db-query-utils/tree/v1)
+[![CircleCI](https://circleci.com/gh/dialexa/pleco/tree/v1.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/pleco/tree/v1)
 
 ## Table of Contents
 - [Overview](#overview)
@@ -20,7 +20,7 @@
 - [Known Limitations](#known-limitations)
 
 ## Overview
-The db-query-utils libraries provide helpful utilities to make querying on the database layer easier. The library provides
+The pleco libraries provide helpful utilities to make querying on the database layer easier. The library provides
 typescript types, GraphQL types, and Joi validation types for filtering, sorting, and paging as well as functions to
 perform those operations.
 
@@ -29,14 +29,14 @@ The functions that do all the heavy lifting are in `src/functions/index.ts`. Ref
 package to view the usage for each function.
 
 ### Prerequisites
-Before we dive into the functions that are provided, `db-query-utils` has some prerequisites
+Before we dive into the functions that are provided, `pleco` has some prerequisites
 that must be met for the functions to work. Because of the nature of supporting multiple query builders,
 extensions must be used to properly call the methods. To convert your query builder to the generic
-query builder that `db-query-utils` uses, refer to the extension library documentation.
+query builder that `pleco` uses, refer to the extension library documentation.
 
 For more information about the generic query builder, refer to the [Extensions section](#extensions)
 
-Note that all of the examples in this README are using the `db-query-utils-knex` extension.
+Note that all of the examples in this README are using the `pleco-knex` extension.
 
 ### getFilterQuery
 This function forms the filter query. The arguments are
@@ -58,13 +58,13 @@ This function forms the filter query. The arguments are
    the filter library.
 
 #### Usage
-See [db-query-utils-querybuilder-name](#extensions)
+See [pleco-querybuilder-name](#extensions)
 
 ### getSortQuery
 This function provides sorting functionality. Currently, sorting by, then by is not supported.
 
 #### Usage
-See [db-query-utils-querybuilder-name](#extensions)
+See [pleco-querybuilder-name](#extensions)
 
 ### getPageLimitOffsetQuery
 This function returns a query with `limit` and `offset`. Empty options can
@@ -72,7 +72,7 @@ also be passed, so it is safe to call `formPageLimitOffsetQuery` even
 with bogus options.
 
 #### Usage
-See [db-query-utils-querybuilder-name](#extensions)
+See [pleco-querybuilder-name](#extensions)
 
 ## Typescript Types
 The typescript types can be found in `src/types/index.ts`.
@@ -87,7 +87,7 @@ The typescript types can be found in `src/types/index.ts`.
 
 ### Usage
 ```ts
-import { IFilterQuery } from '@dialexa/db-query-utils';
+import { IFilterQuery } from '@dialexa/pleco';
 
 export interface IVehicleFilterInput {
   AND: IVehicleFilterInput[];
@@ -104,7 +104,7 @@ export interface IVehicleFilterInput {
 ```
 
 ## Extensions
-`db-query-utils` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
+`pleco` is able to support multiple query builders by providing a generic, minimal `IQueryBuilder`
 interface that only requires a subset of a full query builder features. To support another query builder,
 all that is needed is to implement the features needed in the required query builder.
 
@@ -113,9 +113,9 @@ but all extensions will convert back to your query builder by calling `.build()`
 
 Current supported query builders:
 
-| library | db-query-utils extension |
+| library | pleco extension |
 |---------|-----------------------------|
-| knex    | [db-query-utils-knex](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils-knex) |
+| knex    | [pleco-knex](https://github.com/dialexa/pleco/tree/v1/packages/pleco-knex) |
 
 ## Known Limitations
 1. Cursor pagination is currently unsupported

@@ -1,4 +1,4 @@
-# DB Query Utils - GraphQL
+# Pleco - GraphQL
 
 ## Table of Contents
 - [Overview](#overview)
@@ -31,7 +31,7 @@ abilities with `AND` and `OR`.
 | lte       |                 | ✔                   | ✔                | ✔                  |
 | contains  |                 | ✔                   |                  |                    |
 
-In addition to the 4 `FilterQuery_*` types, db-query-utils-graphql also provides
+In addition to the 4 `FilterQuery_*` types, pleco-graphql also provides
 - `SortDirection`: an enum of `ASC` and `DESC`
 - `LimitOffsetPage`: an input object with limit and offset
 - `graphQLTypes` which is a string containing the definitions of all the types in SDL.
