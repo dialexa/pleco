@@ -1,6 +1,6 @@
 {
   "name": "@dialexa/pleco-knex",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -23,17 +23,17 @@
     ],
     "extension": [
       ".ts"
-      ],
-      "require": [
-        "ts-node/register"
-      ],
-      "reporter": [
-        "text-summary",
-        "text",
-        "html"
-      ],
-      "sourceMap": true,
-      "instrument": true
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -46,7 +46,7 @@
     ]
   },
   "dependencies": {
-    "pleco": "file:../pleco",
-    "knex": "^0.16.5"
+    "knex": "^0.16.5",
+    "pleco": "file:../pleco"
   }
 }
