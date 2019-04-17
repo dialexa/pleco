@@ -10,6 +10,6 @@
   },
   "include": ["../src/**/*.ts", "./**/*.ts"],
   "references": [
-    { "path": "../../db-query-utils-knex" }
+    { "path": "../../pleco-knex" }
   ]
 }

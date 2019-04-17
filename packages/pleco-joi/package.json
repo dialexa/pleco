@@ -1,11 +1,10 @@
 {
-  "name": "db-query-utils",
+  "name": "pleco-joi",
   "version": "0.1.0",
-  "description": "A library for filtering resources in GraphQL on the database layer",
   "main": "dist/index.js",
-  "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
-  "license": "MIT",
   "typings": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
   "files": [
     "dist/**/*"
   ],
@@ -45,6 +44,6 @@
     ]
   },
   "dependencies": {
-    "chance": "^1.0.18"
+    "joi": "^14.3.1"
   }
 }

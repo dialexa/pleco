@@ -23,7 +23,7 @@ The rules for filters are:
 
 #### Usage
 ```ts
-import { filterQuerySchema } from '@dialexa/db-query-utils-joi';
+import { filterQuerySchema } from '@dialexa/pleco-joi';
 
 const vehicleFilterSchemaKeys = {
   AND: Joi.array().items(Joi.lazy(() => vehicleFilterSchema)),
@@ -45,7 +45,7 @@ Validating against this schema will also automatically convert the input to uppe
 
 #### Usage
 ```ts
-import { sortDirectionSchema } from '@dialexa/db-query-utils-joi';
+import { sortDirectionSchema } from '@dialexa/pleco-joi';
 
 const vehicleSortSchemaKeys = {
   numberOfUsers: sortDirectionSchema,
@@ -58,5 +58,5 @@ const vehicleSortSchema = Joi.object().keys(vehicleSortSchemaKeys).oxor(Object.k
 `limitOffsetPageSchema`: validates that an object containing optional `limit` and `offset` are non-negative integers
 
 ## Resources
-- [GraphQL Types](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils-graphql)
-- [Typescript Types](https://github.com/dialexa/db-query-utils/tree/v1/packages/db-query-utils)
+- [GraphQL Types](https://github.com/dialexa/pleco/tree/v1/packages/pleco-graphql)
+- [Typescript Types](https://github.com/dialexa/pleco/tree/v1/packages/pleco)

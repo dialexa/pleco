@@ -1,17 +1,17 @@
 {
-   "name": "db-query-utils-monorepo",
+   "name": "pleco-monorepo",
    "version": "0.1.0",
-   "description": "A collection of utilities for query-utilsing the database",
+   "description": "A collection of utilities for querying the database",
    "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
    "license": "MIT",
-   "repository": "https://github.com/dialexa/db-query-utils",
+   "repository": "https://github.com/dialexa/pleco",
    "scripts": {
       "build": "tsc --build tsconfig.build.json",
       "lint": "lerna run --concurrency=1 --stream lint",
       "test": "lerna run --parallel --stream test",
-      "test:core": "npm run test --scope db-query-utils",
-      "test:knex": "npm run test --scope db-query-utils-knex",
-      "test:joi": "npm run test --scope db-query-utils-joi",
+      "test:core": "npm run test --scope pleco",
+      "test:knex": "npm run test --scope pleco-knex",
+      "test:joi": "npm run test --scope pleco-joi",
       "coverage": "lerna run --parallel test:coverage",
       "clean": "git clean -dfqX -- ./node_modules **/{dist,node_modules}/ ./packages/*/tsconfig*tsbuildinfo"
    },
@@ -50,9 +50,9 @@
       "typescript": "^3.3.1"
    },
    "dependencies": {
-      "db-query-utils": "file:packages/db-query-utils",
-      "db-query-utils-graphql": "file:packages/db-query-utils-graphql",
-      "db-query-utils-joi": "file:packages/db-query-utils-joi",
-      "db-query-utils-knex": "file:packages/db-query-utils-knex"
+      "pleco": "file:packages/pleco",
+      "pleco-graphql": "file:packages/pleco-graphql",
+      "pleco-joi": "file:packages/pleco-joi",
+      "pleco-knex": "file:packages/pleco-knex"
    }
 }

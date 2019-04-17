@@ -5,9 +5,9 @@
   "files": [],
   "include": [],
   "references": [
-    { "path": "./packages/db-query-utils" },
-    { "path": "./packages/db-query-utils-graphql" },
-    { "path": "./packages/db-query-utils-joi" },
-    { "path": "./packages/db-query-utils-knex" }
+    { "path": "./packages/pleco" },
+    { "path": "./packages/pleco-graphql" },
+    { "path": "./packages/pleco-joi" },
+    { "path": "./packages/pleco-knex" }
   ]
 }

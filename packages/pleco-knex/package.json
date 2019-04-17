@@ -1,5 +1,5 @@
 {
-  "name": "db-query-utils-knex",
+  "name": "pleco-knex",
   "version": "0.1.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -43,7 +43,7 @@
     ]
   },
   "dependencies": {
-    "db-query-utils": "file:../db-query-utils",
+    "pleco": "file:../pleco",
     "knex": "^0.16.5"
   }
 }

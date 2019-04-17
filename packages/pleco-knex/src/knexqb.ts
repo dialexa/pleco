@@ -1,4 +1,4 @@
-import { IQueryBuilder } from 'db-query-utils';
+import { IQueryBuilder } from 'pleco';
 import Knex from 'knex';
 
 export interface IConstructorArgs {
