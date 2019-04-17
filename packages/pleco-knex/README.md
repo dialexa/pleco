@@ -1,4 +1,4 @@
-# DB GraphQL Filter Knex
+# Pleco - Knex
 
 ## Table of Contents
 - [Overview](#overview)
