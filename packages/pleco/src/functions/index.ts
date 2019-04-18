@@ -134,7 +134,7 @@ export const getFilterQuery = <Q>(
 /**
  * Handles sorting
  *
- * This function wraps around the existing query and joins with the soriting subquery and orders by the sort column
+ * This function wraps around the existing query and joins with the sorting subquery and orders by the sort column
  * of the sorting subquery. The reason for this is because queries that select DISTINCT will not work by just
  * doing a join, without selecting the sort column as well.
  *
