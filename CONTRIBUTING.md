@@ -14,14 +14,14 @@ POSTGRES_DB=pleco_test
 
 Then run the command
 ```
-npm run test
+yarn test
 ```
 
 To run tests for individual packages, check out the package.json, where you can find commands like
 ```
-npm run test:core -> tests the pleco package
-npm run test:joi -> tests the pleco-joi package
-npm run test:knex -> tests the pleco-knex package
+yarn test:core -> tests the pleco package
+yarn test:joi -> tests the pleco-joi package
+yarn test:knex -> tests the pleco-knex package
 ```
 
 ### Core Tests
