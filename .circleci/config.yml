@@ -19,7 +19,7 @@ jobs:
           keys:
             - dependency-cache-{{ checksum "package.json" }}
 
-      - run: npm install
+      - run: yarn --frozen-lockfile
 
       - save_cache:
           paths:
@@ -28,10 +28,10 @@ jobs:
 
       - run:
           name: Lint
-          command: npm run lint
+          command: yarn lint
 
       - run:
           name: Build
-          command: npm run build
+          command: yarn build
 
-      - run: npm run test
+      - run: yarn test
