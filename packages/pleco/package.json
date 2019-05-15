@@ -1,6 +1,6 @@
 {
   "name": "@dialexa/pleco",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A library for filtering resources on the database layer",
   "main": "dist/index.js",
   "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
