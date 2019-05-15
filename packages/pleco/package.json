@@ -49,6 +49,7 @@
     ]
   },
   "dependencies": {
-    "chance": "^1.0.18"
+    "chance": "^1.0.18",
+    "lerna": "^3.14.0"
   }
 }
