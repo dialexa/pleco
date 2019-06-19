@@ -1,4 +1,6 @@
-# Pleco - Joi
+# ![Pleco logo](/assets/logo.svg)
+
+# Pleco Joi
 
 ## Table of Contents
 - [Overview](#overview)

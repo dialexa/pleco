@@ -1,4 +1,6 @@
-# Pleco - GraphQL
+# ![Pleco logo](/assets/logo.svg)
+
+# Pleco GraphQL
 
 ## Table of Contents
 - [Overview](#overview)
