@@ -1,7 +1,6 @@
-# ![Pleco logo](assets/logo.svg)
+# ![Pleco logo](/assets/logo.svg)
 
 [![CircleCI](https://circleci.com/gh/dialexa/pleco/tree/master.svg?style=svg&circle-token=94bf2e6d0f46c7e3f4937d8d1acb59fb02b94d0c)](https://circleci.com/gh/dialexa/pleco/tree/master)
-
 
 ## Table of Contents
 - [Overview](#overview)

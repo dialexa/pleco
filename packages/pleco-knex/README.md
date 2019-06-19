@@ -1,4 +1,6 @@
-# Pleco - Knex
+# ![Pleco logo](/assets/logo.svg)
+
+# Pleco Knex
 
 ## Table of Contents
 - [Overview](#overview)
