@@ -4,6 +4,7 @@
 
 ## Table of Contents
 - [Overview](#overview)
+- [Installation](#installation)
 - [Functions](#functions)
   * [Prerequisites](#prerequisites)
   * [getFilterQuery](#getfilterquery)
@@ -25,7 +26,7 @@ typescript types, GraphQL types, and Joi validation types for filtering, sorting
 perform those operations.
 
 ## Installation
-Core package
+### Core package
 ```
 yarn add @dialexa/pleco
 ```
@@ -34,7 +35,7 @@ or
 npm install @dialexa/pleco
 ```
 
-Knex extension
+### Knex extension
 ```
 yarn add @dialexa/pleco-knex
 ```
@@ -43,7 +44,7 @@ or
 npm install @dialexa/pleco-knex
 ```
 
-GraphQL add-on
+### GraphQL add-on
 ```
 yarn add @dialexa/pleco-graphql
 ```
@@ -52,7 +53,7 @@ or
 npm install @dialexa/pleco-graphql
 ```
 
-Joi add-on
+### Joi add-on
 ```
 yarn add @dialexa/pleco-joi
 ```
