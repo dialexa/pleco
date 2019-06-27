@@ -26,6 +26,10 @@
     "max-len": [2, { "code": 140, "ignoreComments": true }],
     "no-undef": 0,
     "semi": [2, "always"],
-    "comma-dangle": [2, "always-multiline"]
+    "comma-dangle": [2, "always-multiline"],
+    "@typescript-eslint/explicit-function-return-type": [2, {
+      "allowExpressions": true
+    }],
+    "no-unused-expressions": 0
   }
 }

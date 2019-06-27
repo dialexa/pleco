@@ -1,4 +1,4 @@
-import { GraphQLFilterTypes, SortDirection } from '../types';
+import { FilterType, SortDirection } from '../types';
 
 type QueryCallback<T> = (builder: T) => void;
 type Raw = any; // TODO: figure out how to enforce this type
@@ -13,15 +13,15 @@ export interface IQueryBuilder<T> {
   leftJoin(table: string, column1: string, column2: string): this;
   leftJoin(raw: Raw, column1: string, column2: string): this;
 
-  whereIn(column: string, values: GraphQLFilterTypes[]): this;
+  whereIn(column: string, values: FilterType[]): this;
   whereIn(column: string, raw: Raw): this;
-  whereNotIn(column: string, values: GraphQLFilterTypes[]): this;
+  whereNotIn(column: string, values: FilterType[]): this;
   whereNotIn(column: string, raw: Raw): this;
 
   whereNull(column: string): this;
   whereNotNull(column: string): this;
 
-  where(column: string, operator: string, value: GraphQLFilterTypes): this;
+  where(column: string, operator: string, value: FilterType): this;
   where(callback: QueryCallback<this>): this;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

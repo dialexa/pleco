@@ -19,19 +19,19 @@ allowing users to provide comparison operations like `in`, `lt`, `gt`, `eq`, as 
 abilities with `AND` and `OR`.
 
 ### Provided Exports
-| operation | FilterQuery\_ID | FilterQuery\_String | FilterQuery\_Int | FilterQuery\_Float |
-|-----------|-----------------|---------------------|------------------|--------------------|
-| AND       | ✔               | ✔                   | ✔                | ✔                  |
-| OR        | ✔               | ✔                   | ✔                | ✔                  |
-| in        | ✔               | ✔                   | ✔                | ✔                  |
-| nin       | ✔               | ✔                   | ✔                | ✔                  |
-| eq        | ✔               | ✔                   | ✔                | ✔                  |
-| ne        | ✔               | ✔                   | ✔                | ✔                  |
-| gt        |                 | ✔                   | ✔                | ✔                  |
-| lt        |                 | ✔                   | ✔                | ✔                  |
-| gte       |                 | ✔                   | ✔                | ✔                  |
-| lte       |                 | ✔                   | ✔                | ✔                  |
-| contains  |                 | ✔                   |                  |                    |
+| operation | FilterQuery\_Boolean | FilterQuery\_ID | FilterQuery\_String | FilterQuery\_Int | FilterQuery\_Float |
+|-----------|--------------------- |-----------------|---------------------|------------------|--------------------|
+| AND       | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| OR        | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| in        | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| nin       | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| eq        | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| ne        | ✔                    | ✔               | ✔                   | ✔                | ✔                  |
+| gt        |                      |                 | ✔                   | ✔                | ✔                  |
+| lt        |                      |                 | ✔                   | ✔                | ✔                  |
+| gte       |                      |                 | ✔                   | ✔                | ✔                  |
+| lte       |                      |                 | ✔                   | ✔                | ✔                  |
+| contains  |                      |                 | ✔                   |                  |                    |
 
 In addition to the 4 `FilterQuery_*` types, pleco-graphql also provides
 - `SortDirection`: an enum of `ASC` and `DESC`
@@ -40,14 +40,15 @@ In addition to the 4 `FilterQuery_*` types, pleco-graphql also provides
 
 All these exports were written using what they will appear as in SDL. The javascript objects are:
 
-| SDL Name            | Javascript Export        |
-|---------------------|--------------------------|
-| FilterQuery\_ID     | GraphQLFilterQueryID     |
-| FilterQuery\_String | GraphQLFilterQueryString |
-| FilterQuery\_Int    | GraphQLFilterQueryInt    |
-| FilterQuery\_Float  | GraphQLFilterQueryFloat  |
-| SortDirection       | GraphQLSortDirection     |
-| LimitOffsetPage     | GraphQLLimitOffsetPage   |
+| SDL Name             | Javascript Export         |
+|----------------------|---------------------------|
+| FilterQuery\_Boolean | GraphQLFilterQueryBoolean |
+| FilterQuery\_ID      | GraphQLFilterQueryID      |
+| FilterQuery\_String  | GraphQLFilterQueryString  |
+| FilterQuery\_Int     | GraphQLFilterQueryInt     |
+| FilterQuery\_Float   | GraphQLFilterQueryFloat   |
+| SortDirection        | GraphQLSortDirection      |
+| LimitOffsetPage      | GraphQLLimitOffsetPage    |
 
 #### Notes
 - `null` can be passed to `eq` and `ne` and will do a `whereNull` and `whereNotNull`, respectively
@@ -101,6 +102,7 @@ with variables
   "filter": {
     "AND": [
       { "make": { "eq": "nissan" } },
+      { "model": { "in": ["altima", "sentra"] } },
       { "numberOfUsers": { "AND": [{ "gt": 1000 }, { "lt": 1999 }] } },
       {
         "OR": [
@@ -116,7 +118,11 @@ with variables
   }
 }
 ```
-This will specify that the user wants all vehicles whose make is "nissan", who has between 1000-1999 users (exclusive),
+This will specify that the user wants all vehicles whose make is "nissan", with model "altima" or "sentry",
+who has between 1000-1999 users (exclusive),
 whose user survey ratings is greater than or equal to 80.5
 and whose MPG satisifies either highway strictly greater than 30mpg or city greater than or equal to 20mpg, and
 sorted by userSurveyRating ascending.
+
+## Known Limitations
+- Implicit eq and in are not currently supported because GraphQL does not support union input types yet

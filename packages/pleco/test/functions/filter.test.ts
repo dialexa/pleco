@@ -253,5 +253,36 @@ describe('(Functions) Filter', () => {
     const result = await getResult(filter, query);
     expect(result).to.have.members(expectedIds(vehicles, [1, 2]));
   });
+
+  it('should filter with implicit AND', async () => {
+    const query = knex('vehicles');
+    const filter = {
+      year: { gte: 2015 },
+      make: { eq: 'Honda' },
+    };
+    const result = await getResult(filter, query);
+    expect(result).to.have.members(expectedIds(vehicles, [3, 4]));
+  });
+
+  it('should filter with implicit AND nested', async () => {
+    const query = knex('vehicles');
+    const filter = { year: { gte: 2015, lt: 2018 } };
+    const result = await getResult(filter, query);
+    expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
+  });
+
+  it('should filter with implicit eq', async () => {
+    const query = knex('vehicles');
+    const filter = { model: 'Civic' };
+    const result = await getResult(filter, query);
+    expect(result).to.have.members(expectedIds(vehicles, [3]));
+  });
+
+  it('should filter with implicit in', async () => {
+    const query = knex('vehicles');
+    const filter = { year: [2015, 2016] };
+    const result = await getResult(filter, query);
+    expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
+  });
 });
 

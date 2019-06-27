@@ -41,17 +41,16 @@ const subqueries = {
 
 const filter = {
   AND: [
-    AND: [
-      { make: { eq: "nissan" } },
-      { numberOfUsers: { AND: [{ gt: 1000 }, { lt: 1999 }] } },
-      {
-        OR: [
-          { highwayMPG: { gt: 30 } },
-          { cityMPG: { gte: 20 } }
-        ]
-      },
-      { userSurveyRating: { gte: 80.5 } }
-    ]
+    { make: { eq: 'nissan' } },
+    { model: { in: ['altima', 'sentra'] } },
+    { numberOfUsers: { AND: [{ gt: 1000 }, { lt: 1999 }] } },
+    {
+      OR: [
+        { highwayMPG: { gt: 30 } },
+        { cityMPG: { gte: 20 } }
+      ]
+    },
+    { userSurveyRating: { gte: 80.5 } }
   ]
 };
 
@@ -61,8 +60,25 @@ let query = knex('vehicles').where(builder =>
 );
 ```
 
+Additionally, you can denote filter as
+```ts
+const filter = { // implicit AND
+  make: 'nissan', // implicit eq
+  model: ['atlima', 'sentra'] // implicit in
+  numberOfUsers: { gt: 1000, lt: 1999 },
+  {
+    OR: [
+      { highwayMPG: { gt: 30 } },
+      { cityMPG: { gte: 20 } }
+    ]
+  },
+  userSurveyRating: { gte: 80.5 }
+}
+```
+
 ### getSortQuery
-Continuing from the code snippet for the [filter function](#getfilterquery)
+Continuing from the code snippet for the [filter function](#getfilterquery). Note that due to the
+way that the sort query is generated, passing `mutate: true` will not mutate the original query.
 ```ts
 import { getSortQuery } from '@dialexa/pleco-knex';
 
