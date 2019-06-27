@@ -1,6 +1,6 @@
 {
   "name": "@dialexa/pleco-joi",
-  "version": "0.1.2",
+  "version": "0.2.0-alpha.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/dialexa/pleco/tree/master/packages/pleco-joi",
