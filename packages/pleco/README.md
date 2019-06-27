@@ -24,6 +24,43 @@ The pleco libraries provide helpful utilities to make querying on the database l
 typescript types, GraphQL types, and Joi validation types for filtering, sorting, and paging as well as functions to
 perform those operations.
 
+## Installation
+Core package
+```
+yarn add @dialexa/pleco
+```
+or
+```
+npm install @dialexa/pleco
+```
+
+Knex extension
+```
+yarn add @dialexa/pleco-knex
+```
+or
+```
+npm install @dialexa/pleco-knex
+```
+
+GraphQL add-on
+```
+yarn add @dialexa/pleco-graphql
+```
+or
+```
+npm install @dialexa/pleco-graphql
+```
+
+Joi add-on
+```
+yarn add @dialexa/pleco-joi
+```
+or
+```
+npm install @dialexa/pleco-joi
+```
+
 ## Functions
 Refer to each querybuilder implementation's package to view the usage for each function.
 
