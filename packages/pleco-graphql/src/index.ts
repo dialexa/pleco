@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLFloat,
   GraphQLID,
@@ -38,6 +39,15 @@ const extendedFilterFields = (type: GraphQLScalarType): IExtendedFilterFields =>
   lt: { type },
   gte: { type },
   lte: { type },
+});
+
+export const GraphQLFilterQueryBoolean: GraphQLInputObjectType = new GraphQLInputObjectType({
+  name: 'FilterQuery_Boolean',
+  fields: () => ({
+    ...commonFilterFields(GraphQLBoolean),
+    AND: { type: new GraphQLList(GraphQLFilterQueryBoolean) },
+    OR: { type: new GraphQLList(GraphQLFilterQueryBoolean) },
+  }),
 });
 
 export const GraphQLFilterQueryFloat: GraphQLInputObjectType = new GraphQLInputObjectType({
@@ -94,6 +104,7 @@ export const GraphQLLimitOffsetPage: GraphQLInputObjectType = new GraphQLInputOb
 });
 
 export const graphQLTypes = [
+  printType(GraphQLFilterQueryBoolean),
   printType(GraphQLFilterQueryFloat),
   printType(GraphQLFilterQueryID),
   printType(GraphQLFilterQueryInt),

@@ -1,9 +1,9 @@
 // The Typescript types that cover the GraphQL Scalars
-export type GraphQLFilterTypes = string | number;
+export type FilterType = string | number | boolean;
 
-export interface IFilterAND {
-  AND: IFilter[];
-}
+type StringNotAND = Exclude<string, 'AND'>;
+
+export type IFilterAND = { [key in StringNotAND]: IFilter; } | { AND: IFilter[] };
 
 export interface IFilterOR {
   OR: IFilter[];
@@ -12,13 +12,15 @@ export interface IFilterOR {
 export type IFilter =
   IFilterAND |
   IFilterOR |
-  Record<string, IFilterQuery<GraphQLFilterTypes>>;
+  Record<string, IFilterQuery<FilterType>>;
 
-export type IFilterQueryANDOR<T extends GraphQLFilterTypes> =
+export type IFilterQueryANDOR<T extends FilterType> =
   { AND: Array<IFilterQuery<T>> } |
   { OR: Array<IFilterQuery<T>> };
 
-export type IFilterQueryFields<T extends GraphQLFilterTypes> =
+export type IFilterQueryFields<T extends FilterType> =
+  T |
+  T[] |
   { in: T[] } |
   { nin: T[] } |
   { eq: T } |
@@ -29,12 +31,11 @@ export type IFilterQueryFields<T extends GraphQLFilterTypes> =
   { ne: T } |
   { contains: T };
 
-export type IFilterQuery<T extends GraphQLFilterTypes> = IFilterQueryANDOR<T> | IFilterQueryFields<T>;
+export type IFilterQuery<T extends FilterType> = IFilterQueryANDOR<T> | IFilterQueryFields<T>;
 
 export type SortDirection = 'ASC' | 'DESC';
 
 export type ISort = Record<string, SortDirection>;
-
 
 export interface ILimitOffsetPage {
   limit: number;

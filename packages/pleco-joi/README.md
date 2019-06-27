@@ -19,15 +19,16 @@ The Joi validation schemas provide additional protection around what the user in
 
 The rules for filters are:
 - each filter query can contain nested AND or OR
-- each filter object can only have one key
+- each filter object can have multiple operators
 - each filter can only have the keys specified in the schema
 - the filter can be empty
 
 #### Usage
 ```ts
 import { filterQuerySchema } from '@dialexa/pleco-joi';
+import Joi from 'joi';
 
-const vehicleFilterSchemaKeys = {
+const vehicleFilterSchema = Joi.object().keys({
   AND: Joi.array().items(Joi.lazy(() => vehicleFilterSchema)),
   OR: Joi.array().items(Joi.lazy(() => vehicleFilterSchema)),
   make: filterQuerySchema('String', Joi.string()),
@@ -37,9 +38,7 @@ const vehicleFilterSchemaKeys = {
   highwayMPG: filterQuerySchema('Int', Joi.number().integer().min(0)),
   cityMPG: filterQuerySchema('Int', Joi.number().integer().min(0)),
   userSurveyRating: filterQUerySchema('Float', Joi.number().min(0).max(100)),
-};
-
-const vehicleFilterSchema = Joi.object().keys(vehicleFilterSchemaKeys).oxor(Object.keys(vehicleFilterSchemaKeys));
+});
 ```
 
 `sortDirectionSchema`: validates that the argument to a sort operation is 'ASC' or 'DESC' (case insensitive).
@@ -48,6 +47,7 @@ Validating against this schema will also automatically convert the input to uppe
 #### Usage
 ```ts
 import { sortDirectionSchema } from '@dialexa/pleco-joi';
+import Joi from 'joi';
 
 const vehicleSortSchemaKeys = {
   numberOfUsers: sortDirectionSchema,

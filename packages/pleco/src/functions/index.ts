@@ -58,11 +58,23 @@ export const getFilterQuery = <Q>(
   const { filter, subqueries } = args;
   if (!filter) return query;
 
-  const operator = Object.keys(filter)[0];
+  let operator = undefined;
+  if (Object.keys(filter).length > 1) operator = 'AND';
+  else operator = Object.keys(filter)[0];
   if (!operator) return query;
 
   if (operator === 'AND') {
-    ((filter as IFilterAND).AND).map((f) => {
+    /*
+     * Convert implicit AND to regular AND syntax
+     *
+     * AND: { key1: { ... }, key2: { ... }, ... }
+     * AND: [ { key1: { ... }, { key2: { ... }, ...]
+     */
+    const andFilter = filter as IFilterAND;
+    const andArray: IFilter[] = andFilter.hasOwnProperty('AND') ? andFilter.AND as IFilter[] :
+      Object.entries(andFilter).map(([k, v]: [string, IFilter]) => ({ [k]: v }));
+
+    andArray.map((f) => {
       query.where((builder) =>
         getFilterQuery({ filter: f, subqueries }, builder)
       );
@@ -116,14 +128,21 @@ export const getFilterQuery = <Q>(
     default: { // Referencing a field
       if (!subqueries[operator]) throw new Error(`Error forming filter query: missing subquery for ${operator}`);
 
+      let subfilter = {};
+      if (Array.isArray(filter[operator])) subfilter = { in: parameter };
+      else if (typeof filter[operator] === 'object') subfilter = filter[operator];
+      else if (['string', 'number', 'boolean'].includes(typeof filter[operator])) subfilter = { eq: parameter };
+      else throw new Error(`Error parsing filter. Type ${typeof filter[operator]} is not supported`);
+
       // Get the subquery
       const subquery = subqueries[operator].clone();
       const whereInQuery = query.getNewInstance();
       query.whereIn('id',
         whereInQuery.select('resource_id')
           .from(subquery.as(`subquery_${operator}__${random.guid()}`)) // to avoid clashing subquery names
-          .where((builder) => getFilterQuery({ filter: filter[operator], subqueries }, builder))
+          .where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder))
       );
+
       break;
     }
   }

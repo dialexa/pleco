@@ -1,4 +1,4 @@
-import { IQueryBuilder } from '@dialexa/pleco';
+import { FilterType, IQueryBuilder } from '@dialexa/pleco';
 import Knex from 'knex';
 
 export interface IConstructorArgs {
@@ -66,7 +66,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this;
   }
 
-  public whereIn(column: string, args: this | Array<string | number>): this {
+  public whereIn(column: string, args: this | FilterType[]): this {
     if (Array.isArray(args)) {
       const values = args;
       this.qb.whereIn(column, values);
@@ -78,7 +78,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this;
   }
 
-  public whereNotIn(column: string, args: this | Array<string | number>): this {
+  public whereNotIn(column: string, args: this | FilterType[]): this {
     if (Array.isArray(args)) {
       const values = args;
       this.qb.whereNotIn(column, values);
@@ -102,7 +102,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this;
   }
 
-  public where(...args: [string, string, string | number] | [Function]): this {
+  public where(...args: [string, string, FilterType] | [Function]): this {
     if (args.length === 3) {
       const [column, operator, value] = args;
       this.whereWithOperation(column, operator, value);

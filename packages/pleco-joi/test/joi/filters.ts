@@ -1,9 +1,44 @@
-export const joiFilterTests = () => {
+import { expect } from 'chai';
+import Joi from 'joi';
+
+import { filterQuerySchema } from 'src/index';
+
+export const joiFilterTests = (): void => {
   describe('filter', () => {
     it('should handle nested AND');
     it('should handle nested OR');
 
-    it('should reject multiple operators');
+    it('should allow implicit eq', async () => {
+      const schema = Joi.object().keys({
+        field: filterQuerySchema('Int', Joi.number().integer()),
+      });
+
+      const input = { field: 1 };
+
+      expect(await Joi.validate(input, schema)).to.be.ok;
+    });
+    it('should allow implicit in', async () => {
+      const schema = Joi.object().keys({
+        field: filterQuerySchema('Int', Joi.number().integer()),
+      });
+
+      const input = { field: [1, 2] };
+
+      expect(await Joi.validate(input, schema)).to.be.ok;
+    });
+    it('should allow multiple operators', async () => {
+      const schema = Joi.object().keys({
+        field1: filterQuerySchema('Int', Joi.number().integer()),
+        field2: filterQuerySchema('String', Joi.string()),
+      });
+
+      const input = {
+        field1: { eq: 1, lt: 10 },
+        field2: { eq: 'test' },
+      };
+
+      expect(await Joi.validate(input, schema)).to.be.ok;
+    });
 
     describe('User Defined Joi Schema', () => {
       it('should validate a user specified joi schema correctly');
@@ -11,6 +46,16 @@ export const joiFilterTests = () => {
     });
 
     describe('GraphQL Types', () => {
+      it('should validate in for Boolean');
+      it('should validate nin for Boolean');
+      it('should validate eq for Boolean');
+      it('should validate neq for Boolean');
+      it('should reject gt for Boolean');
+      it('should reject gt for Boolean');
+      it('should reject gte for Boolean');
+      it('should reject lte for Boolean');
+      it('should reject contains for Boolean');
+
       it('should validate in for Float');
       it('should validate nin for Float');
       it('should validate eq for Float');
