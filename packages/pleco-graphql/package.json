@@ -1,6 +1,6 @@
 {
   "name": "@dialexa/pleco-graphql",
-  "version": "0.1.3-alpha.0",
+  "version": "0.1.3",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/dialexa/pleco/tree/master/packages/pleco-graphql",
