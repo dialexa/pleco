@@ -102,6 +102,7 @@ with variables
   "filter": {
     "AND": [
       { "make": { "eq": "nissan" } },
+      { "model": { "in": ["altima", "sentra"] } },
       { "numberOfUsers": { "AND": [{ "gt": 1000 }, { "lt": 1999 }] } },
       {
         "OR": [
@@ -117,10 +118,11 @@ with variables
   }
 }
 ```
-This will specify that the user wants all vehicles whose make is "nissan", who has between 1000-1999 users (exclusive),
+This will specify that the user wants all vehicles whose make is "nissan", with model "altima" or "sentry",
+who has between 1000-1999 users (exclusive),
 whose user survey ratings is greater than or equal to 80.5
 and whose MPG satisifies either highway strictly greater than 30mpg or city greater than or equal to 20mpg, and
 sorted by userSurveyRating ascending.
 
 ## Known Limitations
-- Implicit AND, eq, and in are not currently supported because GraphQL does not support union input types yet
+- Implicit eq and in are not currently supported because GraphQL does not support union input types yet

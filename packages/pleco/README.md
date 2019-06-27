@@ -25,8 +25,7 @@ typescript types, GraphQL types, and Joi validation types for filtering, sorting
 perform those operations.
 
 ## Functions
-The functions that do all the heavy lifting are in `src/functions/index.ts`. Refer to each querybuilder implementation's
-package to view the usage for each function.
+Refer to each querybuilder implementation's package to view the usage for each function.
 
 ### Prerequisites
 Before we dive into the functions that are provided, `pleco` has some prerequisites
@@ -75,11 +74,9 @@ with bogus options.
 See [pleco-querybuilder-name](#extensions)
 
 ## Typescript Types
-The typescript types can be found in `src/types/index.ts`.
 
 ### Provided Exports
 `IFilterQuery<T>`: a generic interface that takes a type argument with a union type of all the supported operations (in, nin, etc).
-`IFilterQuery` assumes 1 operation per object.
 
 `SortDirection`: a union type of 'asc' and 'desc'
 
