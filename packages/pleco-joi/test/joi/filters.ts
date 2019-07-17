@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 
 import { filterQuerySchema } from 'src/index';
 
