@@ -48,9 +48,9 @@
   },
   "dependencies": {
     "@dialexa/pleco": "file:../pleco",
-    "knex": "~0.18.0"
+    "knex": "^0.19.1"
   },
   "peerDependencies": {
-    "knex": ">= 0.16.x <= 0.18.x"
+    "knex": ">= 0.16.x <= 0.19.x"
   }
 }
