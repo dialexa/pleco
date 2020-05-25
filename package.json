@@ -6,7 +6,7 @@
    "license": "MIT",
    "repository": "https://github.com/dialexa/pleco",
    "scripts": {
-      "build": "tsc --build tsconfig.build.json",
+      "build": "npx tsc --build tsconfig.build.json",
       "lint": "lerna run --concurrency=1 --stream lint",
       "test": "lerna run --parallel --stream test",
       "test:core": "npm run test --scope pleco",
@@ -47,7 +47,7 @@
       "pg": "^7.10.0",
       "ts-node": "^8.1.0",
       "tsconfig-paths": "^3.8.0",
-      "typescript": "^3.3.1"
+      "typescript": "^3.9.3"
    },
    "dependencies": {
       "@dialexa/pleco": "file:packages/pleco",
