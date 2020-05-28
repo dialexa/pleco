@@ -254,35 +254,101 @@ describe('(Functions) Filter', () => {
     expect(result).to.have.members(expectedIds(vehicles, [1, 2]));
   });
 
-  it('should filter with implicit AND', async () => {
-    const query = knex('vehicles');
-    const filter = {
-      year: { gte: 2015 },
-      make: { eq: 'Honda' },
+  describe('implicit operators', () => {
+    it('should filter with implicit AND', async () => {
+      const query = knex('vehicles');
+      const filter = {
+        year: { gte: 2015 },
+        make: { eq: 'Honda' },
+      };
+      const result = await getResult(filter, query);
+      expect(result).to.have.members(expectedIds(vehicles, [3, 4]));
+    });
+
+    it('should filter with implicit AND nested', async () => {
+      const query = knex('vehicles');
+      const filter = { year: { gte: 2015, lt: 2018 } };
+      const result = await getResult(filter, query);
+      expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
+    });
+
+    it('should filter with mixed implicit and explicit', async () => {
+      const query = knex('vehicles');
+      const filter = {
+        make: 'Nissan',
+        OR: [{ model: 'Sentra' }, { year: 2015 }],
+      };
+      const result = await getResult(filter, query);
+      expect(result).to.have.members(expectedIds(vehicles, [1, 2]));
+    });
+
+    it('should filter with implicit eq', async () => {
+      const query = knex('vehicles');
+      const filter = { model: 'Civic' };
+      const result = await getResult(filter, query);
+      expect(result).to.have.members(expectedIds(vehicles, [3]));
+    });
+
+    it('should filter with implicit in', async () => {
+      const query = knex('vehicles');
+      const filter = { year: [2015, 2016] };
+      const result = await getResult(filter, query);
+      expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
+    });
+  });
+
+  describe('implicit columns', () => {
+    const getImplicitColumnResult = async (filter, query, subqueries?): Promise<{ query: string; ids: string[] }> => {
+      const filterQuery = getFilterQuery({ filter, subqueries }, new KnexQB({ knex, query })).build();
+
+      return {
+        query: filterQuery.toString(),
+        ids: await filterQuery.then((result) => result.map((r) => r.id)),
+      };
     };
-    const result = await getResult(filter, query);
-    expect(result).to.have.members(expectedIds(vehicles, [3, 4]));
-  });
 
-  it('should filter with implicit AND nested', async () => {
-    const query = knex('vehicles');
-    const filter = { year: { gte: 2015, lt: 2018 } };
-    const result = await getResult(filter, query);
-    expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
-  });
+    it('should filter with implicit column and explicit eq', async () => {
+      const query = knex('vehicles');
+      const filter = { model: { eq: 'Altima' } };
+      const result = await getImplicitColumnResult(filter, query);
 
-  it('should filter with implicit eq', async () => {
-    const query = knex('vehicles');
-    const filter = { model: 'Civic' };
-    const result = await getResult(filter, query);
-    expect(result).to.have.members(expectedIds(vehicles, [3]));
-  });
+      expect(result.query).to.eq(`select * from "vehicles" where ("model" = 'Altima')`);
+      expect(result.ids).to.have.members(expectedIds(vehicles, [0, 1]));
+    });
 
-  it('should filter with implicit in', async () => {
-    const query = knex('vehicles');
-    const filter = { year: [2015, 2016] };
-    const result = await getResult(filter, query);
-    expect(result).to.have.members(expectedIds(vehicles, [1, 2, 4]));
+    it('should filter with implicit column and explicit AND', async () => {
+      const query = knex('vehicles');
+      const filter = { year: { AND: [{ lt: 2018 }, { gt: 2015 }] } };
+      const result = await getImplicitColumnResult(filter, query);
+
+      expect(result.query).to.eq(`select * from "vehicles" where (("year" < 2018) and ("year" > 2015))`);
+      expect(result.ids).to.have.members(expectedIds(vehicles, [2]));
+    });
+    it('should filter with implicit column and explicit OR', async () => {
+      const query = knex('vehicles');
+      const filter = { year: { OR: [{ eq: null }, { gt: 2017 }] } };
+      const result = await getImplicitColumnResult(filter, query);
+
+      expect(result.query).to.eq(`select * from "vehicles" where (("year" is null) or ("year" > 2017))`);
+      expect(result.ids).to.have.members(expectedIds(vehicles, [3, 5]));
+    });
+    it('should filter with implicit column and implicit eq', async () => {
+      const query = knex('vehicles');
+      const filter = { model: 'Odyssey' };
+      const result = await getImplicitColumnResult(filter, query);
+
+      expect(result.query).to.eq(`select * from "vehicles" where ("model" = 'Odyssey')`);
+      expect(result.ids).to.have.members(expectedIds(vehicles, [5]));
+    });
+    it('should filter with implicit column and other subqueries', async () => {
+      const { model: _modelQuery, ...subqueries } = vehicleSubqueries;
+      const query = knex('vehicles');
+      const filter = { model: 'Odyssey' };
+      const result = await getImplicitColumnResult(filter, query, subqueries);
+
+      expect(result.query).to.eq(`select * from "vehicles" where ("model" = 'Odyssey')`);
+      expect(result.ids).to.have.members(expectedIds(vehicles, [5]));
+    });
   });
 });
 

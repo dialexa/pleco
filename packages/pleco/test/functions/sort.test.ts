@@ -144,4 +144,42 @@ describe('(Functions) Sort', () => {
     const result = getSortQuery({ sort, subqueries }, new KnexQB({ knex, query })).build();
     expect((await result).map((r) => r.id)).to.deep.equal(expectedIds(manufacturers, [1, 0]));
   });
+
+  describe('implicit columns', () => {
+    const getImplicitColumnResult = async (sort, query, subqueries?): Promise<{ query: string; data: any[] }> => {
+      const sortQuery = getSortQuery({ sort, subqueries }, new KnexQB({ knex, query })).build();
+
+      return {
+        query: sortQuery.toString(),
+        data: await sortQuery,
+      };
+    };
+
+    it('should sort with implicit column', async () => {
+      const query = knex('vehicles');
+      const sort = { year: 'ASC' };
+      const result = await getImplicitColumnResult(sort, query);
+
+      expect(result.query).to.eq(`select * from "vehicles" order by "year" ASC`);
+    });
+
+    it('should sort with implicit column distinct', async () => {
+      const query = knex.distinct('m.*').from('manufacturers as m')
+        .leftJoin('vehicles as v', 'v.make_id', 'm.id');
+      const sort = { 'm.name': 'ASC' };
+      const result = await getImplicitColumnResult(sort, query);
+
+      // eslint-disable-next-line max-len
+      expect(result.query).to.eq(`select distinct "m".* from "manufacturers" as "m" left join "vehicles" as "v" on "v"."make_id" = "m"."id" order by "m"."name" ASC`);
+    });
+
+    it('should sort with implicit column and other subqueries', async () => {
+      const { model: _modelQuery, ...subqueries } = vehicleSubqueries;
+      const query = knex('vehicles');
+      const sort = { model: 'DESC' };
+      const result = await getImplicitColumnResult(sort, query, subqueries);
+
+      expect(result.query).to.eq(`select * from "vehicles" order by "model" DESC`);
+    });
+  });
 });

@@ -30,6 +30,10 @@
     "@typescript-eslint/explicit-function-return-type": [2, {
       "allowExpressions": true
     }],
-    "no-unused-expressions": 0
+    "no-unused-expressions": 0,
+    "quotes": [2, "single", {
+      "allowTemplateLiterals": true,
+      "avoidEscape": true
+    }]
   }
 }
