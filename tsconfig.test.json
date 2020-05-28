@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base",
   "compilerOptions": {
-    "types": ["node", "mocha"]
+    "types": ["node", "mocha"],
+    "noUnusedLocals": false
   }
 }

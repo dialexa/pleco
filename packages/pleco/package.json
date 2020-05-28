@@ -5,15 +5,16 @@
   "main": "dist/index.js",
   "author": "Matthew Kuo <matthew.kuo@dialexa.com>",
   "license": "MIT",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/dialexa/pleco/tree/master/packages/pleco",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "dist/index.d.ts"
   ],
   "scripts": {
     "build": "tsc",
     "lint": "eslint --color src/**/*.ts test/**/*.ts",
-    "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha test/**/*.test.ts --exit --colors",
+    "test": "TS_NODE_PROJECT=./test/tsconfig.json nyc mocha \"test/**/*.test.ts\" --exit --colors",
     "test:coverage": "nyc report --reporter=text-lcov | coveralls",
     "precommit": "lint-staged"
   },
@@ -49,6 +50,6 @@
     ]
   },
   "dependencies": {
-    "chance": "^1.0.18"
+    "uuid": "^8.1.0"
   }
 }

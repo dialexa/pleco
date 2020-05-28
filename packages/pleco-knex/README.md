@@ -20,8 +20,8 @@ for ease of use.
 ```ts
 import { getFilterQuery } from '@dialexa/pleco-knex';
 
-const make = knex('vehicles').select('id as resource_id', 'make as value', 'make as sort');
-const model = knex('vehicles').select('id as resource_id', 'model as value', 'model as sort');
+// Suppose vehicles has the columns id, make, model, highwayMPG, cityMPG
+// Note that you do not have to create subqueries for columns that exist on the table already
 
 // Create our subqueries
 const numberOfUsers = knex
@@ -33,8 +33,6 @@ const numberOfUsers = knex
 ... // Subqueries for the other filter fields
 
 const subqueries = {
-  make,
-  model,
   numberOfUsers,
   ...
 };
@@ -64,14 +62,12 @@ Additionally, you can denote filter as
 ```ts
 const filter = { // implicit AND
   make: 'nissan', // implicit eq
-  model: ['atlima', 'sentra'] // implicit in
+  model: ['atlima', 'sentra'], // implicit in
   numberOfUsers: { gt: 1000, lt: 1999 },
-  {
-    OR: [
-      { highwayMPG: { gt: 30 } },
-      { cityMPG: { gte: 20 } }
-    ]
-  },
+  OR: [
+    { highwayMPG: { gt: 30 } },
+    { cityMPG: { gte: 20 } }
+  ],
   userSurveyRating: { gte: 80.5 }
 }
 ```
@@ -98,18 +94,21 @@ const page = { limit: 25, offset: 50 };
 query = getPageLimitOffsetQuery(page, { knex, query });
 ```
 
-## Recipes
-### Automating the Creation of Subqueries for Each Column
-It is tedious to have to make subqueries for each column manually. We have found use in the following for postgres + knex:
+## Notes on Subqueries
+Due to how flexible the library is for filtering arbitrary data, the generated
+SQL can be quite large. If just filtering on columns on the table, it is
+recommended to not include a subquery for the column. If not subquery is found
+for a filter key, the library will assume the filter key is a column on the
+table. For example:
 ```ts
-const columnNames = await knex('vehicles').columnInfo().then(Object.keys);
+// vehicles has make and model columns
+import { getFilterQuery } from '@dialexa/pleco-knex';
 
-const subqueries = {};
-columnNames.forEach(column => {
-  subqueries[convertToCamelcase(column)] = knex('vehicles').select(
-    'id as resource_id',
-    knex.raw('?? as value', [ column ]),
-    knex.raw('?? as sort', [ column ]),
-  )
-});
+const filter = {
+  make: 'nissan',
+  model: 'altima',
+};
+
+let query = knex('vehicles').where(builder =>
+  getFilterQuery({ filter }, { knex, query: builder, mutate: true });
 ```

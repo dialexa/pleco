@@ -116,7 +116,7 @@ See [pleco-querybuilder-name](#extensions)
 ### Provided Exports
 `IFilterQuery<T>`: a generic interface that takes a type argument with a union type of all the supported operations (in, nin, etc).
 
-`SortDirection`: a union type of 'asc' and 'desc'
+`SortDirection`: a union type of 'ASC' and 'DESC'
 
 `ILimitOffsetPage`: an object containing limit and offset as numberse to provide pagination arguments
 

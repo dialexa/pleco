@@ -3,16 +3,14 @@ export type FilterType = string | number | boolean;
 
 type StringNotAND = Exclude<string, 'AND'>;
 
-export type IFilterAND = { [key in StringNotAND]: IFilter; } | { AND: IFilter[] };
+export type IFilterAND = { [key in StringNotAND]: INestedFilter; } | { AND: IFilter[] };
+interface INestedFilterAND { AND: INestedFilter[] }
 
-export interface IFilterOR {
-  OR: IFilter[];
-}
+export interface IFilterOR { OR: IFilter[] }
+interface INestedFilterOR { OR: INestedFilter[] }
 
-export type IFilter =
-  IFilterAND |
-  IFilterOR |
-  Record<string, IFilterQuery<FilterType>>;
+export type IFilter = IFilterAND | IFilterOR | Record<string, IFilterQuery<FilterType>>;
+export type INestedFilter = INestedFilterAND | INestedFilterOR;
 
 export type IFilterQueryANDOR<T extends FilterType> =
   { AND: Array<IFilterQuery<T>> } |

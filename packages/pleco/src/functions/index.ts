@@ -20,7 +20,7 @@
  *    the filter library.
  */
 
-import Chance from 'chance';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   IQueryBuilder,
@@ -30,11 +30,12 @@ import {
   IFilterAND,
   IFilterOR,
   ILimitOffsetPage,
+  INestedFilter,
   ISort,
 } from '../types';
 
 interface IGetFilterQueryArgs<Q> {
-  filter: IFilter;
+  filter: IFilter | INestedFilter;
   subqueries: Record<string, IQueryBuilder<Q>>;
 }
 
@@ -43,22 +44,23 @@ interface IGetSortQueryArgs<Q> {
   subqueries: Record<string, IQueryBuilder<Q>>;
 }
 
-const random = new Chance();
-
 /**
  * Handles filtering
  *
  * @param args the object containing the filter and the subqueries for those filters
- * @param qb the query builder to build off of
+ * @param query the query builder to build off of
+ * @param valueCol the name of the column to use for the value to filter on
  */
 export const getFilterQuery = <Q>(
   args: IGetFilterQueryArgs<Q>,
   query: IQueryBuilder<Q>,
+  valueCol = 'value',
 ): IQueryBuilder<Q> => {
   const { filter, subqueries } = args;
   if (!filter) return query;
 
   let operator = undefined;
+  // implicit AND
   if (Object.keys(filter).length > 1) operator = 'AND';
   else operator = Object.keys(filter)[0];
   if (!operator) return query;
@@ -71,12 +73,12 @@ export const getFilterQuery = <Q>(
      * AND: [ { key1: { ... }, { key2: { ... }, ...]
      */
     const andFilter = filter as IFilterAND;
-    const andArray: IFilter[] = andFilter.hasOwnProperty('AND') ? andFilter.AND as IFilter[] :
-      Object.entries(andFilter).map(([k, v]: [string, IFilter]) => ({ [k]: v }));
+    const andArray: Array<IFilter | INestedFilter> = andFilter.hasOwnProperty('AND') ? andFilter.AND as IFilter[] :
+      Object.entries(andFilter).map(([k, v]: [string, INestedFilter]) => ({ [k]: v }));
 
     andArray.map((f) => {
       query.where((builder) =>
-        getFilterQuery({ filter: f, subqueries }, builder)
+        getFilterQuery({ filter: f, subqueries }, builder, valueCol)
       );
     });
 
@@ -86,7 +88,7 @@ export const getFilterQuery = <Q>(
   if (operator === 'OR') {
     ((filter as IFilterOR).OR).map((f) => {
       query.orWhere((builder) =>
-        getFilterQuery({ filter: f, subqueries }, builder)
+        getFilterQuery({ filter: f, subqueries }, builder, valueCol)
       );
     });
 
@@ -97,54 +99,60 @@ export const getFilterQuery = <Q>(
 
   switch (operator) {
     case 'in':
-      query.whereIn('value', parameter);
+      query.whereIn(valueCol, parameter);
       break;
     case 'nin':
-      query.whereNotIn('value', parameter);
+      query.whereNotIn(valueCol, parameter);
       break;
     case 'eq':
-      if (parameter === null) query.whereNull('value');
-      else query.where('value', '=', parameter);
+      if (parameter === null) query.whereNull(valueCol);
+      else query.where(valueCol, '=', parameter);
       break;
     case 'gt':
-      query.where('value', '>', parameter);
+      query.where(valueCol, '>', parameter);
       break;
     case 'lt':
-      query.where('value', '<', parameter);
+      query.where(valueCol, '<', parameter);
       break;
     case 'gte':
-      query.where('value', '>=', parameter);
+      query.where(valueCol, '>=', parameter);
       break;
     case 'lte':
-      query.where('value', '<=', parameter);
+      query.where(valueCol, '<=', parameter);
       break;
     case 'ne':
-      if (parameter === null) query.whereNotNull('value');
-      else query.where('value', '!=', parameter);
+      if (parameter === null) query.whereNotNull(valueCol);
+      else query.where(valueCol, '!=', parameter);
       break;
     case 'contains':
-      query.whereRaw('lower(value) like ?', [`%${parameter.toLowerCase()}%`]);
+      query.whereRaw('lower(??) like ?', [valueCol, `%${parameter.toLowerCase()}%`]);
       break;
-    default: { // Referencing a field
-      if (!subqueries[operator]) throw new Error(`Error forming filter query: missing subquery for ${operator}`);
-
+    default:
       let subfilter = {};
+
+      // implicit IN
       if (Array.isArray(filter[operator])) subfilter = { in: parameter };
+      // regular filter
       else if (typeof filter[operator] === 'object') subfilter = filter[operator];
+      // implicit eq
       else if (['string', 'number', 'boolean'].includes(typeof filter[operator])) subfilter = { eq: parameter };
       else throw new Error(`Error parsing filter. Type ${typeof filter[operator]} is not supported`);
 
-      // Get the subquery
-      const subquery = subqueries[operator].clone();
-      const whereInQuery = query.getNewInstance();
-      query.whereIn('id',
-        whereInQuery.select('resource_id')
-          .from(subquery.as(`subquery_${operator}__${random.guid()}`)) // to avoid clashing subquery names
-          .where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder))
-      );
+      if (!subqueries || !subqueries[operator]) {
+        // if there's no subquery, assume it's just a column on the table
+        query.where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder, operator));
+      } else {
+        // Get the subquery
+        const subquery = subqueries[operator].clone();
+        const whereInQuery = query.getNewInstance();
+        query.whereIn('id',
+          whereInQuery.select('resource_id')
+            .from(subquery.as(`subquery_${operator}__${uuidv4()}`)) // to avoid clashing subquery names
+            .where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder, valueCol))
+        );
+      }
 
       break;
-    }
   }
 
   return query;
@@ -171,10 +179,13 @@ export const getSortQuery = <Q>(
   if (!field) return query;
 
   const order = sort[field];
+
+  if (!subqueries || !subqueries[field]) {
+    // assume it's just a column on the query
+    return query.orderBy(field, order);
+  }
+
   const sortSubquery = subqueries[field];
-
-  if (!sortSubquery) throw new Error(`Error forming sort query: missing subquery for ${field}`);
-
   const wrapperQuery = query.getNewInstance();
 
   return wrapperQuery
