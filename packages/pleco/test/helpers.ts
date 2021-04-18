@@ -1,12 +1,14 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import _ from 'lodash';
 
 import { KnexQB } from '@dialexa/pleco-knex';
 
-function transform<T>(data: T, func: Function): T;
-function transform<T>(data: T[], func: Function): T[];
+type TransformFunction<T> = (_: T | T[]) => T | T[];
 
-function transform<T>(data: T | T[], func: Function): T | T[] {
+function transform<T>(data: T, func: TransformFunction<T>): T;
+function transform<T>(data: T[], func: TransformFunction<T>): T[];
+
+function transform<T>(data: T | T[], func: TransformFunction<T>): T | T[] {
   if (!data) {
     return data;
   } else if (Array.isArray(data)) {
@@ -35,7 +37,7 @@ export function snakeCase<T>(data: T | T[]): T | T[] {
 export const getSubqueries = async (
   table: string,
   knex: Knex,
-  subqueries: Record<string, Knex.QueryBuilder> = {}
+  subqueries: Record<string, Knex.QueryBuilder> = {},
 ): Promise<Record<string, KnexQB>> => {
   const columnNames = await knex(table).columnInfo().then(Object.keys);
   const columnSubqueries: Record<string, Knex.QueryBuilder> = {};

@@ -8,7 +8,7 @@
       "test/*": ["test/*"]
     }
   },
-  "include": ["../src/**/*.ts", "./**/*.ts"],
+  "include": ["../src/**/*.ts", "../test/**/*.ts"],
   "references": [
     { "path": "../../pleco-knex" }
   ]

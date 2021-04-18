@@ -78,7 +78,7 @@ export const getFilterQuery = <Q>(
 
     andArray.map((f) => {
       query.where((builder) =>
-        getFilterQuery({ filter: f, subqueries }, builder, valueCol)
+        getFilterQuery({ filter: f, subqueries }, builder, valueCol),
       );
     });
 
@@ -88,7 +88,7 @@ export const getFilterQuery = <Q>(
   if (operator === 'OR') {
     ((filter as IFilterOR).OR).map((f) => {
       query.orWhere((builder) =>
-        getFilterQuery({ filter: f, subqueries }, builder, valueCol)
+        getFilterQuery({ filter: f, subqueries }, builder, valueCol),
       );
     });
 
@@ -148,7 +148,7 @@ export const getFilterQuery = <Q>(
         query.whereIn('id',
           whereInQuery.select('resource_id')
             .from(subquery.as(`subquery_${operator}__${uuidv4()}`)) // to avoid clashing subquery names
-            .where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder, valueCol))
+            .where((builder) => getFilterQuery({ filter: subfilter, subqueries }, builder, valueCol)),
         );
       }
 

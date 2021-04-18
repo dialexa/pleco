@@ -2,14 +2,28 @@ import Joi from '@hapi/joi';
 
 type GraphQLFilterScalar = 'Boolean' | 'ID' | 'String' | 'Int' | 'Float';
 
-const filterInputBasicSchema = (joiType: Joi.Schema): object => ({
+interface IFilterInputBasicSchema {
+  in: Joi.Schema;
+  nin: Joi.Schema;
+  eq: Joi.Schema;
+  ne: Joi.Schema;
+}
+
+const filterInputBasicSchema = (joiType: Joi.Schema): IFilterInputBasicSchema => ({
   in: Joi.array().items(joiType),
   nin: Joi.array().items(joiType),
   eq: joiType.allow(null),
   ne: joiType.allow(null),
 });
 
-const filterInputExtendedSchema = (joiType: Joi.Schema): object => ({
+interface IFilterInputExtendedSchema extends IFilterInputBasicSchema {
+  gt: Joi.Schema;
+  lt: Joi.Schema;
+  gte: Joi.Schema;
+  lte: Joi.Schema;
+}
+
+const filterInputExtendedSchema = (joiType: Joi.Schema): IFilterInputExtendedSchema => ({
   ...filterInputBasicSchema(joiType),
   gt: joiType,
   lt: joiType,
@@ -17,12 +31,24 @@ const filterInputExtendedSchema = (joiType: Joi.Schema): object => ({
   lte: joiType,
 });
 
-const filterInputStringSchema = (joiType: Joi.Schema): object => ({
+interface IFilterInputStringSchema extends IFilterInputExtendedSchema {
+  contains: Joi.Schema;
+}
+
+const filterInputStringSchema = (joiType: Joi.Schema): IFilterInputStringSchema => ({
   ...filterInputExtendedSchema(joiType),
   contains: joiType,
 });
 
-const filterInputSchemas = (joiType: Joi.Schema): object => ({
+interface IFilterInputSchema {
+  Boolean: IFilterInputBasicSchema;
+  Float: IFilterInputExtendedSchema;
+  ID: IFilterInputBasicSchema;
+  Int: IFilterInputExtendedSchema;
+  String: IFilterInputStringSchema;
+}
+
+const filterInputSchemas = (joiType: Joi.Schema): IFilterInputSchema => ({
   Boolean: filterInputBasicSchema(joiType),
   Float: filterInputExtendedSchema(joiType),
   ID: filterInputBasicSchema(joiType),
