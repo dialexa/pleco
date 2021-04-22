@@ -1,17 +1,18 @@
 import { expect } from 'chai';
 import Chance from 'chance';
-import Knex from 'knex';
+import { knex } from 'knex';
+import { Knex } from 'knex';
 
 import { KnexQB } from 'src/knexqb';
 
 const random = new Chance();
 
 describe('KnexQB', () => {
-  let knex: Knex;
+  let db: Knex;
   let qb: KnexQB;
 
   before(async () => {
-    knex = Knex({
+    db = knex({
       client: 'pg',
       pool: {
         min: 2,
@@ -26,20 +27,20 @@ describe('KnexQB', () => {
       },
     });
 
-    await knex.schema.createTable('knex_test', (t) => {
+    await db.schema.createTable('knex_test', (t) => {
       t.uuid('id').primary();
       t.integer('field1');
       t.integer('field2');
       t.integer('field3');
     });
 
-    await knex.schema.createTable('knex_join_test', (t) => {
+    await db.schema.createTable('knex_join_test', (t) => {
       t.uuid('id').primary();
       t.uuid('join_column').references('id').inTable('knex_test');
       t.integer('field1');
     });
 
-    await knex('knex_test').insert([{
+    await db('knex_test').insert([{
       id: random.guid(),
       field1: 0,
       field2: 0,
@@ -63,14 +64,14 @@ describe('KnexQB', () => {
   });
 
   after(async () => {
-    await knex.schema.dropTable('knex_join_test');
-    await knex.schema.dropTable('knex_test');
+    await db.schema.dropTable('knex_join_test');
+    await db.schema.dropTable('knex_test');
 
-    await knex.destroy();
+    await db.destroy();
   });
 
   it('should handle select', async () => {
-    qb = new KnexQB({ knex, query: knex('knex_test') });
+    qb = new KnexQB({ knex: db, query: db('knex_test') });
     const result = await qb.select('field1').build();
     expect(result.map((r) => r.field1)).to.have.members([0, 0, 0, 1]);
   });
@@ -81,7 +82,7 @@ describe('KnexQB', () => {
   it('should handle whereNotNull');
   it('should handle where column, operator, value');
   it('should handle where with callback', async () => {
-    qb = new KnexQB({ knex, query: knex('knex_test') });
+    qb = new KnexQB({ knex: db, query: db('knex_test') });
     const query = qb.where((builder) => builder.where('field1', '=', 1)).build();
 
     const result = await query;

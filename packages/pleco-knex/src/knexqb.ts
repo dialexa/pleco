@@ -1,5 +1,5 @@
 import { FilterType, IQueryBuilder } from '@dialexa/pleco';
-import Knex from 'knex';
+import { Knex } from 'knex';
 
 export interface IConstructorArgs {
   /** the knex connection */
@@ -9,6 +9,8 @@ export interface IConstructorArgs {
   /** whether or not to mutate the query builder or clone */
   mutate?: boolean;
 }
+
+type QueryCallback<T> = (builder: T) => void;
 
 export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
   public static bulkCreateQueries(knex: Knex, queries: Record<string, Knex.QueryBuilder>): Record<string, KnexQB> {
@@ -21,8 +23,8 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return result;
   }
 
-  private qb;
-  private knex;
+  private qb: Knex.QueryBuilder;
+  private knex: Knex;
 
   public constructor(obj: IConstructorArgs) {
     if (obj.query) this.qb = obj.mutate ? obj.query : obj.query.clone();
@@ -40,7 +42,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
 
   public from(args: string | this): this {
     if (args instanceof String) {
-      this.qb.from(args);
+      this.qb.from(args as Knex.TableDescriptor);
     } else {
       this.qb.from((args as KnexQB).build());
     }
@@ -57,7 +59,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
   public leftJoin(...args: [string, string, string] | [this, string, string]): this {
     if (args[0] instanceof String) {
       const [table, column1, column2] = args;
-      this.qb.leftJoin(table, column1, column2);
+      this.qb.leftJoin(table as Knex.TableDescriptor, column1, column2);
     } else {
       const [subquery, column1, column2] = args;
       this.qb.leftJoin((subquery as KnexQB).build(), column1, column2);
@@ -102,7 +104,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this;
   }
 
-  public where(...args: [string, string, FilterType] | [Function]): this {
+  public where(...args: [string, string, FilterType] | [QueryCallback<this>]): this {
     if (args.length === 3) {
       const [column, operator, value] = args;
       this.whereWithOperation(column, operator, value);
@@ -120,7 +122,7 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this;
   }
 
-  public orWhere(callback: Function): this {
+  public orWhere(callback: QueryCallback<this>): this {
     this.qb.orWhere(this.generateKnexCallback(callback));
 
     return this;
@@ -156,15 +158,15 @@ export class KnexQB implements IQueryBuilder<Knex.QueryBuilder> {
     return this.qb;
   }
 
-  private whereWithOperation(column, operator, value): void {
+  private whereWithOperation(column: string, operator: string, value): void {
     this.qb.where(column, operator, value);
   }
 
-  private whereWithCallback(callback): void {
+  private whereWithCallback(callback: QueryCallback<this>): void {
     this.qb.where(this.generateKnexCallback(callback));
   }
 
-  private generateKnexCallback(callback): Function {
+  private generateKnexCallback(callback: QueryCallback<this>): Knex.QueryCallback {
     return (builder: Knex.QueryBuilder) => {
       const knexQb = new KnexQB({ knex: this.knex, query: builder, mutate: true });
       callback.call(knexQb, knexQb);

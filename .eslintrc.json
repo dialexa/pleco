@@ -3,22 +3,29 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["@dialexa/eslint-config-dialexa/node-es6", "plugin:@typescript-eslint/recommended"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 2018,
-    "sourceType": "module",
-    "project": "./tsconfig.json"
+    "sourceType": "module"
   },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "import"],
+  "ignorePatterns": ["*.json"],
   "rules": {
-    "@typescript-eslint/array-type": ["error", "array-simple"],
+    "@typescript-eslint/array-type": ["error", { "default": "array-simple" }],
     "@typescript-eslint/indent": ["error", 2],
-    "@typescript-eslint/interface-name-prefix": ["error", "always"],
+    "@typescript-eslint/naming-convention": ["error", {
+      "selector": "interface",
+      "format": ["PascalCase"],
+      "custom": {
+        "regex": "^I[A-Z]",
+        "match": true
+      }
+    }],
 
     "import/no-default-export": 2,
 
